@@ -15,8 +15,8 @@ public class Matches {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int match_id;
 
-    @OneToMany(mappedBy = "team_id")
-    private List<Teams> teams_id;
+    @OneToMany
+    private List<Teams> teams;
 
 
     @Column(name = "Zwyciezca" , length = 30)
@@ -26,7 +26,8 @@ public class Matches {
     @Column(name = "TypeOfGame", length = 15)
     private TypeOfGame typeOfGame;
 
-    @ManyToOne(targetEntity = Judges.class)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "judge_id")
     private Judges mainJudge;
 
 

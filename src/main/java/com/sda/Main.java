@@ -39,13 +39,31 @@ public class Main {
         team2.setName("VII LO");
         team2.setTypeOfGame(TypeOfGame.VOLLEYBALL);
 
+        Teams team3 = new Teams();
+        team3.setName("ZSE");
+        team3.setTypeOfGame(TypeOfGame.VOLLEYBALL);
+
+        Teams team4 = new Teams();
+        team4.setName("KUCHARZE");
+        team4.setTypeOfGame(TypeOfGame.VOLLEYBALL);
+
 
         List<Teams> teams = new LinkedList<>();
+        teams.add(team1);
+        teams.add(team2);
 
         Matches match1 = new Matches();
-        match1.setTeams_id(teams);
-
+        match1.setTeams(teams);
         match1.setMainJudge(judge1);
+
+        List<Teams> teams2 = new LinkedList<>();
+        teams2.add(team3);
+        teams2.add(team4);
+
+        Matches match2 = new Matches();
+        match2.setTeams(teams2);
+        match2.setMainJudge(judge1);
+
 
 
 
@@ -57,6 +75,10 @@ public class Main {
         connection.getEntityManager().persist(team1);
         connection.getEntityManager().persist(team2);
         connection.getEntityManager().persist(match1);
+        connection.getEntityManager().persist(team3);
+        connection.getEntityManager().persist(team4);
+        connection.getEntityManager().persist(match2);
+
 
         connection.getEntityManager().getTransaction().commit();
 
