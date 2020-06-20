@@ -10,15 +10,16 @@ import javax.persistence.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Team {
+public class Teams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int team_id;
-    @Column(name = "Nazwa drużyny",nullable = false,length = 30)
+
+    @Column(name = "Nazwa",nullable = false,length = 30)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "Type of a game", length = 15)
+    @Column(name = "Type", length = 15)
     private TypeOfGame typeOfGame;
 
 

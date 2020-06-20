@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Judge {
+public class Judges {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int judge_id;
@@ -28,7 +28,7 @@ public class Judge {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "match_id")
-    private List<Match> matches = new LinkedList<>();
+    private List<Matches> matches = new LinkedList<>();
 
 
 }

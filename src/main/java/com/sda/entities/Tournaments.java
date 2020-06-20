@@ -11,17 +11,18 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Tournament {
+public class Tournaments {
     @Id
     private int tournament_id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "Type of a game", length = 15)
+    @Column(name = "Type", length = 15)
     private TypeOfGame typeOfGame;
 
 
-
-    List<Judge> judgeList;
-    List<Team> teamList;
+@Transient
+    List<Judges> judgesList;
+@Transient
+    List<Teams> teamsList;
 
 }
