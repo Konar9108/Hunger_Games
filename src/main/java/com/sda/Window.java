@@ -74,7 +74,7 @@ public class Window extends JFrame implements ActionListener {
         pane = new JTabbedPane();
         frame.add(pane);
         panel1 = new JPanel();
-
+///myk myk myk
       // String[] listaDrozyn = {"Karol","Piotr","Damian"};
         //poleListyDrozyn = new JList(listaDrozyn);
         poleListyDrozyn = new JList();
