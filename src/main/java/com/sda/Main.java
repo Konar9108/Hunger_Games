@@ -5,10 +5,8 @@ import com.sda.entities.Matches;
 import com.sda.entities.Teams;
 import com.sda.entities.TypeOfGame;
 import com.sda.jdbc.HungerGamesJdbc;
-import javafx.css.Match;
 
-import java.util.LinkedList;
-import java.util.List;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -48,21 +46,27 @@ public class Main {
         team4.setTypeOfGame(TypeOfGame.VOLLEYBALL);
 
 
-        List<Teams> teams = new LinkedList<>();
-        teams.add(team1);
-        teams.add(team2);
+
 
         Matches match1 = new Matches();
-        match1.setTeams(teams);
+        match1.setTeamOne(team1);
+        match1.setTeamTwo(team2);
+        match1.setTypeOfGame(TypeOfGame.VOLLEYBALL);
         match1.setMainJudge(judge1);
-
-        List<Teams> teams2 = new LinkedList<>();
-        teams2.add(team3);
-        teams2.add(team4);
+        match1.setWinnerTeam(team2);
+        match1.setResult("3:2");
 
         Matches match2 = new Matches();
-        match2.setTeams(teams2);
-        match2.setMainJudge(judge1);
+        match2.setTeamOne(team3);
+        match2.setTeamTwo(team4);
+        match2.setTypeOfGame(TypeOfGame.VOLLEYBALL);
+        match2.setMainJudge(judge3);
+        match2.setWinnerTeam(team4);
+        match2.setResult("3:0");
+
+
+
+
 
 
 
@@ -74,7 +78,7 @@ public class Main {
         connection.getEntityManager().persist(judge3);
         connection.getEntityManager().persist(team1);
         connection.getEntityManager().persist(team2);
-        connection.getEntityManager().persist(match1);
+        connection.getEntityManager().persist(match2);
         connection.getEntityManager().persist(team3);
         connection.getEntityManager().persist(team4);
         connection.getEntityManager().persist(match2);

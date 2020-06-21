@@ -3,8 +3,9 @@ package com.sda.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import javax.persistence.*;
-import java.util.List;
+
 
 @Entity
 @Setter
@@ -15,20 +16,29 @@ public class Matches {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int match_id;
 
-    @OneToMany
-    private List<Teams> teams;
 
+    @OneToOne
+    @JoinColumn(referencedColumnName = "team_id", name = "Drużyna_1_id")
+    private Teams teamOne;
 
-    @Column(name = "Zwyciezca" , length = 30)
-    private int winner_team_id;
+    @OneToOne
+    @JoinColumn(referencedColumnName = "team_id", name = "Drużyna_2_id")
+    private Teams teamTwo;
+
+    @OneToOne
+    @JoinColumn(referencedColumnName = "team_id", name = "Zwycięzca_id")
+    private Teams winnerTeam;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "TypeOfGame", length = 15)
+    @Column(name = "Typ_Gry", length = 15)
     private TypeOfGame typeOfGame;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "judge_id")
     private Judges mainJudge;
+
+    @Column(name = "Wynik")
+    private String result;
 
 
 }
