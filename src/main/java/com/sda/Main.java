@@ -1,10 +1,9 @@
 package com.sda;
 
-import com.sda.entities.Judges;
-import com.sda.entities.Matches;
-import com.sda.entities.Teams;
-import com.sda.entities.TypeOfGame;
+import com.sda.entities.*;
 import com.sda.jdbc.HungerGamesService;
+
+import java.util.List;
 
 
 public class Main {
@@ -86,8 +85,19 @@ public class Main {
 
         service.printJudges();
 
+        service.addTeam("Buldożery", TypeOfGame.DODGEBALL);
+
+        List<Teams> allTeams = service.findAllTeams();
+        String[] allTeamsNames = service.getAllTeamNames(allTeams);
+        for (int i = 0; i < allTeamsNames.length; i++) {
+            System.out.println(allTeamsNames[i]);
+        }
 
 
+        System.out.println(service.findTeamById(1));
+
+        Tournaments tournaments = service.generateTournamentWithRandomTeams(TypeOfGame.DODGEBALL);
+        System.out.println(tournaments);
 
         service.closeConnection();
 

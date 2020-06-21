@@ -1,12 +1,17 @@
 package com.sda.jdbc;
 
 import com.sda.entities.Judges;
+import com.sda.entities.Teams;
+import com.sda.entities.Tournaments;
+import com.sda.entities.TypeOfGame;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class HungerGamesService {
 
@@ -61,5 +66,82 @@ public class HungerGamesService {
 
     }
 
+
+    public List<Judges> findAllJudges() {
+        TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
+        return query.getResultList();
+    }
+
+    public void addTeam(String name, TypeOfGame typeOfGame) {
+        Teams team = new Teams();
+        team.setName(name);
+        team.setTypeOfGame(typeOfGame);
+        entityManager.getTransaction().begin();
+        entityManager.persist(team);
+        entityManager.getTransaction().commit();
+    }
+
+    public void deleteTeamFromGivenId(int teamId) {
+        entityManager.getTransaction().begin();
+        Teams team = entityManager.find(Teams.class, teamId);
+        entityManager.remove(team);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+    }
+
+    public List<Teams> findAllTeams() {
+        TypedQuery<Teams> query = entityManager.createNamedQuery("allTeams", Teams.class);
+        return query.getResultList();
+    }
+
+    public String[] getAllTeamNames(List<Teams> teams) {
+        String[] allTeamsNames = new String[teams.size()];
+        for (int i = 0; i < teams.size(); i++) {
+            allTeamsNames[i] = teams.get(i).getName();
+        }
+        return allTeamsNames;
+    }
+
+    public Teams findTeamById(int id) {
+        TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
+        return (Teams)query.getSingleResult();
+    }
+    public List<Teams> getRandomTeams(){
+        List<Teams> allTeams = this.findAllTeams();
+        Random random = new Random();
+        int numberOfTeams = random.nextInt(allTeams.size());
+        if(numberOfTeams<2) numberOfTeams=2;
+        List<Teams> teamsForTournament = new ArrayList();
+        for(int i=0;i<numberOfTeams;i++){
+            Teams team = allTeams.get(random.nextInt(allTeams.size()));
+            teamsForTournament.add(team);
+            allTeams.remove(team);
+        }
+        return teamsForTournament;
+    }
+
+    //DO SPRAWDZENIA
+    public List<Judges> getRandomJudges(){
+        List<Judges> allJudges = this.findAllJudges();
+        Random random = new Random();
+        int numberOfJudges = random.nextInt(allJudges.size());
+        if(numberOfJudges<3) numberOfJudges=3;
+        List<Judges> judgesForTournament = new ArrayList();
+        for(int i=0;i<numberOfJudges;i++){
+            Judges judge = allJudges.get(random.nextInt(allJudges.size()));
+            judgesForTournament.add(judge);
+            allJudges.remove(judge);
+        }
+        return judgesForTournament;
+    }
+
+    //DO SPRAWDZENIA
+    public Tournaments generateTournamentWithRandomTeams(TypeOfGame typeOfGame){
+        Tournaments tournament = new Tournaments();
+        tournament.setTeamsList(getRandomTeams());
+        tournament.setJudgesList(getRandomJudges());
+        tournament.setTypeOfGame(typeOfGame);
+        return tournament;
+    }
 
 }

@@ -20,9 +20,19 @@ public class Tournaments {
     private TypeOfGame typeOfGame;
 
 
-@Transient
+    @Transient
     List<Judges> judgesList;
-@Transient
+
+    @Transient
     List<Teams> teamsList;
 
+    @Override
+    public String toString() {
+        return "Tournaments{" +
+                "tournament_id=" + tournament_id +
+                ", typeOfGame=" + typeOfGame +
+                ", judgesList=" + judgesList +
+                ", teamsList=" + teamsList +
+                '}';
+    }
 }
