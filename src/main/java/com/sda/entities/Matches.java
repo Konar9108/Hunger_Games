@@ -40,5 +40,9 @@ public class Matches {
     @Column(name = "Wynik")
     private String result;
 
+    @OneToOne
+    @JoinColumn(referencedColumnName = "tournament_id", name = "Turniej_id")
+    private Tournaments tournament;
+
 
 }
