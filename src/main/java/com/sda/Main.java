@@ -4,15 +4,15 @@ import com.sda.entities.Judges;
 import com.sda.entities.Matches;
 import com.sda.entities.Teams;
 import com.sda.entities.TypeOfGame;
-import com.sda.jdbc.HungerGamesJdbc;
-
+import com.sda.jdbc.HungerGamesService;
 
 
 public class Main {
     public static void main(String[] args) {
 
-        HungerGamesJdbc connection = new HungerGamesJdbc();
-        connection.openConnection();
+        HungerGamesService service = new HungerGamesService();
+        service.openConnection();
+
 
         Judges judge1 = new Judges();
         judge1.setFirst_name("Janusz");
@@ -28,6 +28,8 @@ public class Main {
         judge3.setFirst_name("Adam");
         judge3.setLast_name("Adamowicz");
         judge3.setAge(55);
+
+
 
         Teams team1 = new Teams();
         team1.setName("II LO");
@@ -65,32 +67,29 @@ public class Main {
         match2.setResult("3:0");
 
 
+        service.getEntityManager().getTransaction().begin();
+
+        service.getEntityManager().persist(judge1);
+        service.getEntityManager().persist(judge2);
+        service.getEntityManager().persist(judge3);
+        service.getEntityManager().persist(team1);
+        service.getEntityManager().persist(team2);
+        service.getEntityManager().persist(match2);
+        service.getEntityManager().persist(team3);
+        service.getEntityManager().persist(team4);
+        service.getEntityManager().persist(match2);
+
+        service.getEntityManager().getTransaction().commit();
+
+        service.addJudge("Bogdan", "Bogdanowicz", 98);
+
+
+        service.printJudges();
 
 
 
 
-
-
-        connection.getEntityManager().getTransaction().begin();
-
-        connection.getEntityManager().persist(judge1);
-        connection.getEntityManager().persist(judge2);
-        connection.getEntityManager().persist(judge3);
-        connection.getEntityManager().persist(team1);
-        connection.getEntityManager().persist(team2);
-        connection.getEntityManager().persist(match2);
-        connection.getEntityManager().persist(team3);
-        connection.getEntityManager().persist(team4);
-        connection.getEntityManager().persist(match2);
-
-
-        connection.getEntityManager().getTransaction().commit();
-
-
-
-
-
-        connection.closeConnection();
+        service.closeConnection();
 
 
     }
