@@ -1,9 +1,6 @@
 package com.sda.jdbc;
 
-import com.sda.entities.Judges;
-import com.sda.entities.Teams;
-import com.sda.entities.Tournaments;
-import com.sda.entities.TypeOfGame;
+import com.sda.entities.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -120,7 +117,34 @@ public class HungerGamesService {
         return teamsForTournament;
     }
 
-    //DO SPRAWDZENIA
+    public void randomizeVolleyballMatchResult(Matches match) throws IndexOutOfBoundsException {
+
+        if(match == null){
+            throw new IndexOutOfBoundsException("ERROR: Empty Match");
+        }
+        if(match.getTypeOfGame() != TypeOfGame.VOLLEYBALL){
+            throw new IndexOutOfBoundsException("ERROR: match is not a volleyball game.");
+        }
+
+        Random rand = new Random();
+
+        int randomWinner = rand.nextInt(2);
+        if(randomWinner == 0){
+            match.setWinnerTeam(match.getTeamOne());
+        } else {
+            match.setWinnerTeam(match.getTeamTwo());
+        }
+        int loserScore = rand.nextInt(3);
+
+        match.setResult("3:" + loserScore);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(match);
+        entityManager.getTransaction().commit();
+
+    }
+
+                                     //DO SPRAWDZENIA
     public List<Judges> getRandomJudges(){
         List<Judges> allJudges = this.findAllJudges();
         Random random = new Random();
