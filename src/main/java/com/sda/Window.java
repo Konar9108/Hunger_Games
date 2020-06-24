@@ -13,22 +13,15 @@ public class Window extends JFrame implements ActionListener {
     private JPanel panel2;
     private JPanel panel3;
     private JPanel panel4;
-    private JButton panel1button;
-    private JButton panel2button;
-    private JButton panel3button;
-    private JButton buton1;
-    private JTextField field1;
-    private JTextField field2;
-    private JTextField field3;
     private JLabel label1;
     private JLabel label2;
     private JLabel label3;
+    private JLabel label4;
 
 
     private JList poleListyDrozyn;
     private JList poleListyWybranychDrozyn;
     private JList poleListySedziow;
-    private JTextField pulaDruzyn;
 
     private JButton nowaDruzynaButton;
     private JButton nowySedziaButton;
@@ -39,10 +32,13 @@ public class Window extends JFrame implements ActionListener {
     private JButton zglosDruzyneButton;
     private JButton wycofajDruzyneButton;
     private JButton zglosLosoweDruzynyButton;
-    private JComboBox konkurencjaCombo;
+    private JButton modyfikujMeczButton;
+    private JButton generujMeczeButton;
+    private ButtonGroup konkurencjeButtons;
     private JRadioButton siatkowkaButton;
     private JRadioButton przeciaganieLinyButton;
     private JRadioButton dwaOgnieButton;
+    private JTable table;
 
     public void showGuiWindow() {
         frame = new JFrame("System zarządzania turniejem");
@@ -72,7 +68,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addActionToConverterBtn() {
-        buton1.addActionListener(this);
+        dwaOgnieButton.addActionListener(this);
     }
 
     private void addComponents() {
@@ -270,26 +266,87 @@ public class Window extends JFrame implements ActionListener {
 
 
         pane.addTab("Sędziowie", panel2);
-        ////////////////////////////////////////////////////////////Pane 3
+        //////////////////////////////////////////////////////////////////////////////////////////////////////Pane 3
         panel3 = new JPanel();
-        label3 = new JLabel("Enter Last Name Here");
-        field3 = new JTextField(20);
-        field3.setFont(new Font("Calibri", Font.BOLD, 18));
-        field3.setForeground(Color.BLUE);
-        panel3button = new JButton("Enter");
-        panel3button.addActionListener(
+        GridBagLayout layout3 = new GridBagLayout();
+        panel3.setLayout(layout3);
+        GridBagConstraints gbc3 = new GridBagConstraints();
+        siatkowkaButton = new JRadioButton("Turniej Siatkówki");
+        siatkowkaButton.setSelected(true);
+        siatkowkaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "Last Name is " + field3.getText());
+
+                        /////////////// tu dać akcje którą robi
                     }
                 }
         );
-        panel3.add(label3, BorderLayout.NORTH);
-        panel3.add(field3, BorderLayout.CENTER);
-        panel3.add(panel3button, BorderLayout.SOUTH);
+        gbc3.fill = GridBagConstraints.HORIZONTAL;
+        gbc3.gridx = 0;
+        gbc3.gridy = 0;
+        gbc3.ipadx = 10;
+        gbc3.ipady = 5;
+        gbc3.insets = new Insets(5, 5, 5, 5);
+        panel3.add(new JLabel(""),gbc3);
+        gbc2.gridy=1;
+        panel3.add(siatkowkaButton,gbc3);
+        dwaOgnieButton = new JRadioButton("Turniej Dwóch Ogni");
+        dwaOgnieButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        /////////////// tu dać akcje którą robi
+                    }
+                }
+        );
+        gbc3.gridy = 2;
+        panel3.add(dwaOgnieButton,gbc3);
+        przeciaganieLinyButton= new JRadioButton("Turniej Przeciągania Liny");
+        przeciaganieLinyButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        /////////////// tu dać akcje którą robi
+                    }
+                }
+        );
+        gbc3.gridy = 3;
+        panel3.add(przeciaganieLinyButton,gbc3);
+        konkurencjeButtons = new ButtonGroup();
+        konkurencjeButtons.add(siatkowkaButton);
+        konkurencjeButtons.add(dwaOgnieButton);
+        konkurencjeButtons.add(przeciaganieLinyButton);
+
+        modyfikujMeczButton= new JButton("Modyfikuj Mecz");
+        modyfikujMeczButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        /////////////// tu dać akcje którą robi
+                    }
+                }
+        );
+        gbc3.gridy = 4;
+        panel3.add(modyfikujMeczButton,gbc3);
+        generujMeczeButton= new JButton("Generuj Mecze");
+        generujMeczeButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+                        /////////////// tu dać akcje którą robi
+                    }
+                }
+        );
+        gbc3.gridy = 5;
+        panel3.add(generujMeczeButton,gbc3);
+
+        label4= new JLabel("Lista meczów",SwingConstants.CENTER);
+        label4.setFont(new Font("Arial", Font.BOLD, 18));
+        label4.setForeground(Color.BLACK);
+        gbc3.gridx = 1;
+        gbc3.gridy = 0;
+        panel3.add(label4,gbc3);
+        String[] columnNames = {"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
+
         pane.addTab("Turniej", panel3);
-////////////////////////////////////////////////////////////////////////Pane 4
-        panel4 = new JPanel();
+
+
         pane.addTab("Tablica Wyników", panel4);
     }
 
