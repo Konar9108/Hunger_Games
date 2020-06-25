@@ -35,20 +35,10 @@ public class Main {
         service.generateVolleyballMatch(tournament, service.findTeamById(1), service.findTeamById(2) );
 
 
+        new Window().showGuiWindow();
 
 
-//        service.randomizeVolleyballMatchResult(match1);
-//        service.randomizeVolleyballMatchResult(match2);
-
-//        String[] teamNames = service.getAllTeamNames(service.findAllTeams());
-//        for (String teamName : teamNames) {
-//            System.out.println(teamName);
-//        }
-
-
-
-
-        service.closeConnection();
+       // service.closeConnection();
 
 
     }
