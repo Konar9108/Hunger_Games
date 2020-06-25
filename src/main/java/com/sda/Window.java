@@ -1,5 +1,8 @@
 package com.sda;
 
+import com.sda.entities.TypeOfGame;
+import com.sda.jdbc.HungerGamesService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class Window extends JFrame implements ActionListener {
+
+    HungerGamesService service;
     private JFrame frame;
     private JTabbedPane pane;
     private JPanel panel1;
@@ -40,7 +45,29 @@ public class Window extends JFrame implements ActionListener {
     private JRadioButton dwaOgnieButton;
     private JTable table;
 
+    public void setUpDB(){
+
+        service = new HungerGamesService();
+        service.openConnection();
+        service.addJudge("Bogdan", "Bogdanowicz", 25);
+        service.addJudge("Janusz", "Janowicz", 76);
+        service.addJudge("Roman", "Romanowski", 65);
+        service.addJudge("Adam", "Adamowicz", 35);
+        service.addJudge("Piotr", "Piotrowicz", 43);
+
+        service.addTeam("BULDOŻERY", TypeOfGame.VOLLEYBALL);
+        service.addTeam("II LO", TypeOfGame.VOLLEYBALL);
+        service.addTeam("KUCHARZE", TypeOfGame.VOLLEYBALL);
+        service.addTeam("VII LO", TypeOfGame.VOLLEYBALL);
+        service.addTeam("ROLNICY", TypeOfGame.VOLLEYBALL);
+        service.addTeam("SDA", TypeOfGame.VOLLEYBALL);
+        service.addTeam("ZSE", TypeOfGame.VOLLEYBALL);
+        service.addTeam("BACKENDOWCY", TypeOfGame.VOLLEYBALL);
+
+    }
+
     public void showGuiWindow() {
+        setUpDB();
         frame = new JFrame("System zarządzania turniejem");
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setJMenuBar(addMenuBar());
@@ -83,7 +110,9 @@ public class Window extends JFrame implements ActionListener {
         nowaDruzynaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wstaw Nowa druzyna");
+                        String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.OK_CANCEL_OPTION);
+                        System.out.println(nazwaNowejDruzyny);
+                        service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
                     }
                 }
         );
