@@ -51,6 +51,11 @@ public class HungerGamesService {
         entityManager.getTransaction().commit();
     }
 
+    private Judges findJudgeById(int id) {
+        TypedQuery query = entityManager.createNamedQuery("findJudge", Judges.class).setParameter(1,id);
+        return (Judges)query.getSingleResult();
+    }
+
     public void printJudges() {
         List<Judges> allJudges;
         TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
@@ -148,6 +153,7 @@ public class HungerGamesService {
         int randomJudgeIdFromTournament = rand.nextInt(tournament.getJudgesList().size());
 
         Judges judge = findJudgeById(randomJudgeIdFromTournament);
+        match.setTournament(tournament);
         match.setMainJudge(judge);
         match.setTeamOne(teamOne);
         match.setTeamTwo(teamTwo);
@@ -161,22 +167,16 @@ public class HungerGamesService {
 
     }
 
-    private Judges findJudgeById(int id) {
-        TypedQuery query = entityManager.createNamedQuery("findJudge", Judges.class).setParameter(1,id);
-        return (Judges)query.getSingleResult();
-    }
 
 
     public void generateTournamentMatches(Tournaments tournament){
     List<List<Teams>> DimensionalListofTeams;
 
 
-
-
     }
 
 
-                                     //DO SPRAWDZENIA
+
     public List<Judges> getRandomJudges(){
         List<Judges> allJudges = this.findAllJudges();
         Random random = new Random();

@@ -32,10 +32,7 @@ public class Main {
 
         Tournaments tournament = service.generateTournamentWithRandomTeams(TypeOfGame.VOLLEYBALL);
 
-        Teams team1 = service.findTeamById(1);
-        Teams team2 = service.findTeamById(2);
-
-        service.generateVolleyballMatch(tournament, team1, team2 );
+        service.generateVolleyballMatch(tournament, service.findTeamById(1), service.findTeamById(2) );
 
 
 
