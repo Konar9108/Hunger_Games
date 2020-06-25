@@ -24,13 +24,13 @@ public class Judges {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int judge_id;
 
-    @Column(name = "Imię", nullable = false, length = 15)
+    @Column( nullable = false, length = 15)
     private String first_name;
 
-    @Column(name = "Nazwisko", nullable = false, length = 15)
+    @Column( nullable = false, length = 15)
     private String last_name;
 
-    @Column(name = "Wiek")
+    @Column
     private int Age;
 
     @OneToMany(cascade = CascadeType.ALL)

@@ -13,18 +13,31 @@ import java.util.List;
 @NoArgsConstructor
 public class Tournaments {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tournament_id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Type", length = 15)
     private TypeOfGame typeOfGame;
 
-
-    @Transient
+    @ManyToMany
+    @JoinTable(name = "tournaments_judges",
+            joinColumns = @JoinColumn(name = "tournament_id"),
+            inverseJoinColumns = @JoinColumn(name = "judge_id"))
     List<Judges> judgesList;
 
-    @Transient
+
+    @ManyToMany
+    @JoinTable(name = "tournaments_teams",
+            joinColumns = @JoinColumn(name = "tournament_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id"))
     List<Teams> teamsList;
+
+    @ManyToMany
+    @JoinTable(name = "tournaments_matches",
+            joinColumns = @JoinColumn(name = "tournament_id"),
+            inverseJoinColumns = @JoinColumn(name = "match_id"))
+            List<Matches> matchesList;
 
     @Override
     public String toString() {

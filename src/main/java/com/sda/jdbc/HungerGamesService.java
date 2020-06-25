@@ -63,7 +63,6 @@ public class HungerGamesService {
 
     }
 
-
     public List<Judges> findAllJudges() {
         TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
         return query.getResultList();
@@ -103,11 +102,12 @@ public class HungerGamesService {
         TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
         return (Teams)query.getSingleResult();
     }
+
     public List<Teams> getRandomTeams(){
         List<Teams> allTeams = this.findAllTeams();
         Random random = new Random();
         int numberOfTeams = random.nextInt(allTeams.size());
-        if(numberOfTeams<2) numberOfTeams=2;
+        if(numberOfTeams<3) numberOfTeams=3;
         List<Teams> teamsForTournament = new ArrayList();
         for(int i=0;i<numberOfTeams;i++){
             Teams team = allTeams.get(random.nextInt(allTeams.size()));
@@ -138,11 +138,43 @@ public class HungerGamesService {
 
         match.setResult("3:" + loserScore);
 
+
+    }
+
+    public void generateVolleyballMatch(Tournaments tournament, Teams teamOne, Teams teamTwo){
+        Matches match = new Matches();
+        Random rand = new Random();
+
+        int randomJudgeIdFromTournament = rand.nextInt(tournament.getJudgesList().size());
+
+        Judges judge = findJudgeById(randomJudgeIdFromTournament);
+        match.setMainJudge(judge);
+        match.setTeamOne(teamOne);
+        match.setTeamTwo(teamTwo);
+        match.setTypeOfGame(TypeOfGame.VOLLEYBALL);
+        randomizeVolleyballMatchResult(match);
+
         entityManager.getTransaction().begin();
         entityManager.persist(match);
         entityManager.getTransaction().commit();
 
+
     }
+
+    private Judges findJudgeById(int id) {
+        TypedQuery query = entityManager.createNamedQuery("findJudge", Judges.class).setParameter(1,id);
+        return (Judges)query.getSingleResult();
+    }
+
+
+    public void generateTournamentMatches(Tournaments tournament){
+    List<List<Teams>> DimensionalListofTeams;
+
+
+
+
+    }
+
 
                                      //DO SPRAWDZENIA
     public List<Judges> getRandomJudges(){
@@ -165,6 +197,12 @@ public class HungerGamesService {
         tournament.setTeamsList(getRandomTeams());
         tournament.setJudgesList(getRandomJudges());
         tournament.setTypeOfGame(typeOfGame);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(tournament);
+        entityManager.getTransaction().commit();
+
+
         return tournament;
     }
 
