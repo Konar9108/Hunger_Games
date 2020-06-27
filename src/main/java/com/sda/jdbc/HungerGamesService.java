@@ -118,11 +118,18 @@ public class HungerGamesService {
         return (Teams)query.getSingleResult();
     }
 
+    public Teams getRandomTeam(List<Teams> teams){
+        List<Teams> allTeams = teams;
+        Random random = new Random();
+        Teams team = allTeams.get(random.nextInt(allTeams.size()));
+        return team;
+    }
+
     public List<Teams> getRandomTeams(){
         List<Teams> allTeams = this.findAllTeams();
         Random random = new Random();
         int numberOfTeams = random.nextInt(allTeams.size());
-        if(numberOfTeams<3) numberOfTeams=3;
+        if(numberOfTeams<2) numberOfTeams=2;
         List<Teams> teamsForTournament = new ArrayList();
         for(int i=0;i<numberOfTeams;i++){
             Teams team = allTeams.get(random.nextInt(allTeams.size()));
@@ -130,6 +137,11 @@ public class HungerGamesService {
             allTeams.remove(team);
         }
         return teamsForTournament;
+    }
+
+    public Teams findTeamByName(String name) {
+        TypedQuery query = entityManager.createNamedQuery("findTeamByName", Teams.class).setParameter(1,name);
+        return (Teams)query.getSingleResult();
     }
 
     public void randomizeMatchResult(Matches match) throws IndexOutOfBoundsException {

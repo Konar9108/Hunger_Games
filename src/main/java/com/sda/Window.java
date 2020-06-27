@@ -1,5 +1,7 @@
 package com.sda;
 
+import com.sda.entities.Teams;
+import com.sda.entities.TypeOfGame;
 import com.sda.jdbc.HungerGamesService;
 
 import javax.swing.*;
@@ -7,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -43,6 +46,8 @@ public class Window extends JFrame implements ActionListener {
     private JRadioButton przeciaganieLinyButton;
     private JRadioButton dwaOgnieButton;
     private JTable table;
+    private ArrayList<Teams> zgłoszoneDrużyny = new ArrayList();
+
 
     public void setUpDB(){
 
@@ -162,7 +167,17 @@ public class Window extends JFrame implements ActionListener {
         zglosDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "Ma przesunac wybraną z listy druzynę z lewej listy na prawą");
+                        if(poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "Zaznacz drużynę z puli drużyn");
+                        }
+                        else {
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            Teams team = service.findTeamByName(selectedTeam);
+                            if(!zgłoszoneDrużyny.contains(team)){
+                                zgłoszoneDrużyny.add(team);
+                            }
+                            poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
+                        }
                     }
                 }
         );
@@ -170,11 +185,19 @@ public class Window extends JFrame implements ActionListener {
         panel1.add(zglosDruzyneButton,gbc1);
         wycofajDruzyneButton= new JButton("Wycofaj drużynę");
         wycofajDruzyneButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "Ma przesunac wybraną z listy druzynę z prawej listy na lewa");
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    if(poleListyWybranychDrozyn.getSelectedValue() == null) {
+                        JOptionPane.showMessageDialog(null, "Zaznacz drużynę z puli drużyn");
+                    }
+                    else {
+                        String selectedTeam = poleListyWybranychDrozyn.getSelectedValue().toString();
+                        Teams team = service.findTeamByName(selectedTeam);
+                        zgłoszoneDrużyny.remove(team);
+                        poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
                     }
                 }
+            }
         );
         gbc1.gridy = 5;
         panel1.add(wycofajDruzyneButton,gbc1);
@@ -182,7 +205,7 @@ public class Window extends JFrame implements ActionListener {
         zglosLosoweDruzynyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wrzuca losowe druzyny z lewej listy na prawą");
+                        poleListyWybranychDrozyn.setListData( service.getAllTeamNames(service.getRandomTeams()));
                     }
                 }
         );
@@ -406,6 +429,8 @@ public class Window extends JFrame implements ActionListener {
 
         pane.addTab("Tablica Wyników", panel4);
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
