@@ -60,13 +60,13 @@ entityManager.getTransaction().commit();
     }
 
 
-    public void deleteJudgeFromGivenId(int judge_id) {
-        entityManager.getTransaction().begin();
-        Judges judge = entityManager.find(Judges.class, judge_id);
-        entityManager.remove(judge);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-    }
+//    public void deleteJudgeFromGivenId(int judge_id) {
+//        entityManager.getTransaction().begin();
+//        Judges judge = entityManager.find(Judges.class, judge_id);
+//        entityManager.remove(judge);
+//        entityManager.flush();
+//        entityManager.getTransaction().commit();
+//    }
 
     public void deleteJudge(Judges judge) {
         entityManager.getTransaction().begin();
@@ -81,17 +81,15 @@ entityManager.getTransaction().commit();
         return (Judges)query.getSingleResult();
     }
 
-    public void printJudges() {
-        List<Judges> allJudges;
-        TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
-        allJudges = query.getResultList();
-
-        for (Judges allJudge : allJudges) {
-            System.out.println(allJudge + "\n");
-
-        }
-
-    }
+//    public void printJudges() {
+//        List<Judges> allJudges;
+//        TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
+//        allJudges = query.getResultList();
+//
+//        for (Judges allJudge : allJudges) {
+//            System.out.println(allJudge + "\n");
+//        }
+//    }
 
     public List<Judges> findAllJudges() {
         TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
@@ -106,13 +104,13 @@ entityManager.getTransaction().commit();
         entityManager.getTransaction().commit();
     }
 
-    public void deleteTeamFromGivenId(int teamId) {
-        entityManager.getTransaction().begin();
-        Teams team = entityManager.find(Teams.class, teamId);
-        entityManager.remove(team);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-    }
+//    public void deleteTeamFromGivenId(int teamId) {
+//        entityManager.getTransaction().begin();
+//        Teams team = entityManager.find(Teams.class, teamId);
+//        entityManager.remove(team);
+//        entityManager.flush();
+//        entityManager.getTransaction().commit();
+//    }
 
     public void deleteTeamFromGivenName(String name) {
 
@@ -146,10 +144,10 @@ entityManager.getTransaction().commit();
         return allJudgesNames;
     }
 
-    public Teams findTeamById(int id) {
-        TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
-        return (Teams)query.getSingleResult();
-    }
+//    public Teams findTeamById(int id) {
+//        TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
+//        return (Teams)query.getSingleResult();
+//    }
 
     public Teams getRandomTeam(List<Teams> teams){
         List<Teams> allTeams = teams;
