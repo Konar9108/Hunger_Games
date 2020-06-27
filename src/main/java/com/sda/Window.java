@@ -1,5 +1,7 @@
 package com.sda;
 
+import com.sda.entities.Judges;
+import com.sda.entities.Teams;
 import com.sda.jdbc.HungerGamesService;
 
 import javax.swing.*;
@@ -147,7 +149,20 @@ public class Window extends JFrame implements ActionListener {
         modyfikujDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz druzyne do modyfikacji");
+
+                        String teamName = poleListyDrozyn.getSelectedValue().toString();
+                        String nowaNazwa = (String) JOptionPane.showInputDialog(null,"Modyfikacja drużyny","blabla",JOptionPane.PLAIN_MESSAGE,null,null,teamName);
+                        if(nowaNazwa == null){
+                            return;
+                        }
+                        Teams team = service.findTeamByName(teamName);
+                        try {
+                            service.modifyTeam(team,nowaNazwa);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "INVALID");
+                        }
                     }
                 }
         );
@@ -252,7 +267,6 @@ public class Window extends JFrame implements ActionListener {
                                 "Wiek", field3,
                         };
 
-
                         JOptionPane.showConfirmDialog(null,fields,"Dodaj nowego Sędziego",JOptionPane.OK_CANCEL_OPTION);
 
                         String imieSedziego = field1.getText();
@@ -283,7 +297,14 @@ public class Window extends JFrame implements ActionListener {
         usunSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz sedziego do usuniecia");
+                        if (poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
+                        } else {
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            service.deleteTeamFromGivenName(selectedTeam);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        }
                     }
                 }
         );
@@ -293,7 +314,38 @@ public class Window extends JFrame implements ActionListener {
         modyfikujSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz sedziego do modyfikacji");
+                        JTextField field1 = new JTextField();
+                        JTextField field2 = new JTextField();
+                        JTextField field3 = new JTextField();
+
+                        String sedzia = poleListySedziow.getSelectedValue().toString();
+                        String[] sedziaSplit = sedzia.split("\\s+");
+                        field1.setText(sedziaSplit[0]);
+                        field2.setText(sedziaSplit[1]);
+                        field3.setText(sedziaSplit[2]);
+
+                        Object [] fields = {
+                                "Imię", field1,
+                                "Nazwisko", field2,
+                                "Wiek", field3,
+                        };
+
+                        JOptionPane.showConfirmDialog(null,fields,"Modyfikuj sędziego",JOptionPane.OK_CANCEL_OPTION);
+
+                        Judges judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+
+                        String imieSedziego = field1.getText();
+                        String nazwiskoSedziego = field2.getText();
+                        String wiekSedziego = field3.getText();
+
+                        try {
+                            int wiek = Integer.parseInt(wiekSedziego);
+                            service.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
+                            poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "INVALID");
+                        }
                     }
                 }
         );
