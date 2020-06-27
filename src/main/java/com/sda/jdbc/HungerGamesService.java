@@ -113,6 +113,14 @@ public class HungerGamesService {
         return allTeamsNames;
     }
 
+    public String[] getAllJudgesNames(List<Judges> judges) {
+        String[] allJudgesNames = new String[judges.size()];
+        for (int i = 0; i < judges.size(); i++) {
+            allJudgesNames[i] = (judges.get(i).getFirst_name() + " " + judges.get(i).getLast_name());
+        }
+        return allJudgesNames;
+    }
+
     public Teams findTeamById(int id) {
         TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
         return (Teams)query.getSingleResult();
