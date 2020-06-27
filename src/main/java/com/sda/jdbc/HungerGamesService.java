@@ -140,7 +140,7 @@ public class HungerGamesService {
     }
 
     public Teams findTeamByName(String name) {
-        TypedQuery query = entityManager.createNamedQuery("findTeamByName", Teams.class).setParameter(1,name);
+        TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Teams.class).setParameter(1,name);
         return (Teams)query.getSingleResult();
     }
 
