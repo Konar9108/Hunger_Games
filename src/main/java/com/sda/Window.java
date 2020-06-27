@@ -110,9 +110,18 @@ public class Window extends JFrame implements ActionListener {
         nowaDruzynaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.OK_CANCEL_OPTION);
+
+
+
+                        String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.CANCEL_OPTION);
+                        if(nazwaNowejDruzyny!=null) {
+                            service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                        }
+                        else
                         System.out.println(nazwaNowejDruzyny);
                         service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                        poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
                     }
                 }
         );
@@ -129,7 +138,15 @@ public class Window extends JFrame implements ActionListener {
         usunDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia");
+                        if(poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
+                        }
+                        else {
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            service.deleteTeamFromGivenName(selectedTeam);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        }
                     }
                 }
         );
@@ -188,10 +205,9 @@ public class Window extends JFrame implements ActionListener {
         gbc1.gridx = 2;
         gbc1.gridy = 0;
         panel1.add(label2,gbc1);
-///myk myk myk
-        // String[] listaDrozyn = {"Karol","Piotr","Damian"};
-        //poleListyDrozyn = new JList(listaDrozyn);
-        poleListyDrozyn = new JList();
+
+        String[] listaDrozyn = service.getAllTeamNames(service.findAllTeams());
+        poleListyDrozyn = new JList(listaDrozyn);
         poleListyDrozyn.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         poleListyDrozyn.setLayoutOrientation(JList.VERTICAL_WRAP);
         poleListyDrozyn.setVisibleRowCount(-1);
@@ -207,6 +223,8 @@ public class Window extends JFrame implements ActionListener {
         gbc1.gridheight=8;
         gbc1.insets = new Insets(5, 5, 5, 5);
         panel1.add(listScroller, gbc1);
+
+
         // String[] listaDrozyn = {"Karol","Piotr","Damian"};
         //poleListyDrozyn = new JList(listaDrozyn);
         poleListyWybranychDrozyn = new JList();

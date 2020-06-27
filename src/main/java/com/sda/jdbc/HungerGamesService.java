@@ -90,6 +90,17 @@ public class HungerGamesService {
         entityManager.getTransaction().commit();
     }
 
+    public void deleteTeamFromGivenName(String name) {
+
+        entityManager.getTransaction().begin();
+        TypedQuery<Teams> query = entityManager.createNamedQuery("findTeamFromName",Teams.class);
+        query.setParameter(1, name);
+        Teams team = query.getSingleResult();
+        entityManager.remove(team);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+    }
+
     public List<Teams> findAllTeams() {
         TypedQuery<Teams> query = entityManager.createNamedQuery("allTeams", Teams.class);
         return query.getResultList();

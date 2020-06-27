@@ -9,7 +9,9 @@ import javax.persistence.*;
 @NamedNativeQueries({
         @NamedNativeQuery(name = "allTeams", query = "select * from teams", resultClass = Teams.class),
 
-        @NamedNativeQuery(name = "findTeam", query = "select * from teams where team_id = ?", resultClass = Teams.class)
+        @NamedNativeQuery(name = "findTeam", query = "select * from teams where team_id = ?", resultClass = Teams.class),
+
+        @NamedNativeQuery(name = "findTeamFromName", query = "select * from teams where Nazwa = ?", resultClass = Teams.class)
 
 })
 
