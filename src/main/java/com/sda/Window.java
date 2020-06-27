@@ -155,7 +155,7 @@ public class Window extends JFrame implements ActionListener {
                     public void actionPerformed(ActionEvent event) {
 
                         String teamName = poleListyDrozyn.getSelectedValue().toString();
-                        String nowaNazwa = (String) JOptionPane.showInputDialog(null,"Modyfikacja drużyny","blabla",JOptionPane.PLAIN_MESSAGE,null,null,teamName);
+                        String nowaNazwa = (String) JOptionPane.showInputDialog(null,null,"Modyfikacja drużyny",JOptionPane.PLAIN_MESSAGE,null,null,teamName);
                         if(nowaNazwa == null){
                             return;
                         }
@@ -319,13 +319,13 @@ public class Window extends JFrame implements ActionListener {
         usunSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        if (poleListyDrozyn.getSelectedValue() == null) {
-                            JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
-                        } else {
-                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
-                            service.deleteTeamFromGivenName(selectedTeam);
-                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                        // NIE ZROBIONE!
+                        if (poleListySedziow.getSelectedValue() != null) {
+                            JOptionPane.showMessageDialog(null, "wybierz Sedziego do usuniecia!");
 
+                            String selectedJudge = poleListySedziow.getSelectedValue().toString();
+
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
                         }
                     }
                 }
