@@ -319,13 +319,24 @@ public class Window extends JFrame implements ActionListener {
         usunSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        // NIE ZROBIONE!
-                        if (poleListySedziow.getSelectedValue() != null) {
-                            JOptionPane.showMessageDialog(null, "wybierz Sedziego do usuniecia!");
+                        JTextField field1 = new JTextField();
+                        JTextField field2 = new JTextField();
+                        JTextField field3 = new JTextField();
 
-                            String selectedJudge = poleListySedziow.getSelectedValue().toString();
+                        String sedzia = poleListySedziow.getSelectedValue().toString();
+                        String[] sedziaSplit = sedzia.split("\\s+");
+                        field1.setText(sedziaSplit[0]);
+                        field2.setText(sedziaSplit[1]);
+                        field3.setText(sedziaSplit[2]);
 
-                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        Judges judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+                        try {
+                            service.deleteJudge(judge);
+                            poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "BŁĄD");
                         }
                     }
                 }

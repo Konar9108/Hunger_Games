@@ -68,11 +68,8 @@ entityManager.getTransaction().commit();
         entityManager.getTransaction().commit();
     }
 
-    public void deleteJudgeFromGivenNameLastNameAge(String firstName, String lastName, int age) {
+    public void deleteJudge(Judges judge) {
         entityManager.getTransaction().begin();
-        TypedQuery query = entityManager.createNamedQuery("findJudgeFirstNameLastNameAge",Judges.class)
-                .setParameter(1,firstName).setParameter(2,lastName).setParameter(3,age);
-        Judges judge = (Judges) query.getSingleResult();
         entityManager.remove(judge);
         entityManager.flush();
         entityManager.getTransaction().commit();
