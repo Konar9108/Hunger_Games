@@ -1,6 +1,5 @@
 package com.sda;
 
-import com.sda.entities.TypeOfGame;
 import com.sda.jdbc.HungerGamesService;
 
 import javax.swing.*;
@@ -55,14 +54,14 @@ public class Window extends JFrame implements ActionListener {
         service.addJudge("Adam", "Adamowicz", 35);
         service.addJudge("Piotr", "Piotrowicz", 43);
 
-        service.addTeam("BULDOŻERY", TypeOfGame.VOLLEYBALL);
-        service.addTeam("II LO", TypeOfGame.VOLLEYBALL);
-        service.addTeam("KUCHARZE", TypeOfGame.VOLLEYBALL);
-        service.addTeam("VII LO", TypeOfGame.VOLLEYBALL);
-        service.addTeam("ROLNICY", TypeOfGame.VOLLEYBALL);
-        service.addTeam("SDA", TypeOfGame.VOLLEYBALL);
-        service.addTeam("ZSE", TypeOfGame.VOLLEYBALL);
-        service.addTeam("BACKENDOWCY", TypeOfGame.VOLLEYBALL);
+        service.addTeam("BULDOŻERY");
+        service.addTeam("II LO");
+        service.addTeam("KUCHARZE");
+        service.addTeam("VII LO");
+        service.addTeam("ROLNICY");
+        service.addTeam("SDA");
+        service.addTeam("ZSE");
+        service.addTeam("BACKENDOWCY");
 
     }
 
@@ -115,13 +114,10 @@ public class Window extends JFrame implements ActionListener {
 
                         String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.CANCEL_OPTION);
                         if(nazwaNowejDruzyny!=null) {
-                            service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                            System.out.println(nazwaNowejDruzyny);
+                            service.addTeam(nazwaNowejDruzyny);
                             poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
                         }
-                        else
-                        System.out.println(nazwaNowejDruzyny);
-                        service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
-                        poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
                     }
                 }
         );
@@ -390,7 +386,21 @@ public class Window extends JFrame implements ActionListener {
         gbc3.gridy = 0;
         panel3.add(label4,gbc3);
         String[] columnNames = {"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
-
+        Object[][] data = {
+                {"Kathy", "Smith",
+                        "Snowboarding", "1-1", "Piotr", "ADV", "ADSWWWV"},
+                {"Kathy22", "Smith22",
+                        "Snowboarding22", "1-1", "Piotr22", "ADV22", "ADSWWWV22"},
+        };
+        JTable table = new JTable(data, columnNames);
+        JScrollPane listScroller4 = new JScrollPane(table);
+        listScroller4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        listScroller4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller4.setMinimumSize(new Dimension(200,230));
+        table.setFillsViewportHeight(true);
+        gbc3.gridy = 1;
+        gbc3.gridheight = 8;
+        panel3.add(listScroller4,gbc3);
         pane.addTab("Turniej", panel3);
 
 

@@ -73,10 +73,9 @@ public class HungerGamesService {
         return query.getResultList();
     }
 
-    public void addTeam(String name, TypeOfGame typeOfGame) {
+    public void addTeam(String name) {
         Teams team = new Teams();
         team.setName(name);
-        team.setTypeOfGame(typeOfGame);
         entityManager.getTransaction().begin();
         entityManager.persist(team);
         entityManager.getTransaction().commit();
@@ -133,14 +132,12 @@ public class HungerGamesService {
         return teamsForTournament;
     }
 
-    public void randomizeVolleyballMatchResult(Matches match) throws IndexOutOfBoundsException {
+    public void randomizeMatchResult(Matches match) throws IndexOutOfBoundsException {
 
         if(match == null){
             throw new IndexOutOfBoundsException("ERROR: Empty Match");
         }
-        if(match.getTypeOfGame() != TypeOfGame.VOLLEYBALL){
-            throw new IndexOutOfBoundsException("ERROR: match is not a volleyball game.");
-        }
+
 
         Random rand = new Random();
 
@@ -157,7 +154,7 @@ public class HungerGamesService {
 
     }
 
-    public void generateVolleyballMatch(Tournaments tournament, Teams teamOne, Teams teamTwo){
+    public void generateMatch(Tournaments tournament, Teams teamOne, Teams teamTwo){
         Matches match = new Matches();
         Random rand = new Random();
 
@@ -168,13 +165,12 @@ public class HungerGamesService {
         match.setMainJudge(judge);
         match.setTeamOne(teamOne);
         match.setTeamTwo(teamTwo);
-        match.setTypeOfGame(TypeOfGame.VOLLEYBALL);
-        randomizeVolleyballMatchResult(match);
+
+        randomizeMatchResult(match);
 
         entityManager.getTransaction().begin();
         entityManager.persist(match);
         entityManager.getTransaction().commit();
-
 
     }
 

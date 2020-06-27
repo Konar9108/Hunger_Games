@@ -29,9 +29,6 @@ public class Matches {
     @JoinColumn(referencedColumnName = "team_id", name = "Zwycięzca_id")
     private Teams winnerTeam;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Typ_Gry", length = 15)
-    private TypeOfGame typeOfGame;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "judge_id")
