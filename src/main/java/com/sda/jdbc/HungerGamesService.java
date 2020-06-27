@@ -43,6 +43,24 @@ public class HungerGamesService {
         entityManager.getTransaction().commit();
     }
 
+    public void modifyJudge (Judges judge,String firstName, String lastName, int age){
+judge.setAge(age);
+judge.setFirst_name(firstName);
+judge.setLast_name(lastName);
+entityManager.getTransaction().begin();
+entityManager.persist(judge);
+entityManager.flush();
+entityManager.getTransaction().commit();
+
+    }
+
+    public Judges findJudgeFromNameAndLastNameAndAge(String firstName, String lastName, int age) {
+        TypedQuery query = entityManager.createNamedQuery("findJudgeFirstNameLastNameAge", Judges.class)
+                .setParameter(1,firstName).setParameter(2,lastName).setParameter(3,age);
+        return (Judges)query.getSingleResult();
+    }
+
+
     public void deleteJudgeFromGivenId(int judge_id) {
         entityManager.getTransaction().begin();
         Judges judge = entityManager.find(Judges.class, judge_id);
@@ -113,6 +131,14 @@ public class HungerGamesService {
         return allTeamsNames;
     }
 
+    public String[] getAllJudgesNames(List<Judges> judges) {
+        String[] allJudgesNames = new String[judges.size()];
+        for (int i = 0; i < judges.size(); i++) {
+            allJudgesNames[i] = (judges.get(i).getFirst_name() + " " + judges.get(i).getLast_name() + " " + judges.get(i).getAge());
+        }
+        return allJudgesNames;
+    }
+
     public Teams findTeamById(int id) {
         TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
         return (Teams)query.getSingleResult();
@@ -124,6 +150,22 @@ public class HungerGamesService {
         Teams team = allTeams.get(random.nextInt(allTeams.size()));
         return team;
     }
+
+    public Teams findTeamByName(String name) {
+        TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Teams.class).setParameter(1,name);
+        return (Teams)query.getSingleResult();
+    }
+
+    public void modifyTeam (Teams team, String name){
+        team.setName(name);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(team);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+    }
+
+
 
     public List<Teams> getRandomTeams(){
         List<Teams> allTeams = this.findAllTeams();
@@ -137,11 +179,6 @@ public class HungerGamesService {
             allTeams.remove(team);
         }
         return teamsForTournament;
-    }
-
-    public Teams findTeamByName(String name) {
-        TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Teams.class).setParameter(1,name);
-        return (Teams)query.getSingleResult();
     }
 
     public void randomizeMatchResult(Matches match) throws IndexOutOfBoundsException {

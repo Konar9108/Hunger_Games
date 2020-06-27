@@ -2,6 +2,7 @@ package com.sda;
 
 import com.sda.entities.Teams;
 import com.sda.entities.TypeOfGame;
+import com.sda.entities.Judges;
 import com.sda.jdbc.HungerGamesService;
 
 import javax.swing.*;
@@ -49,7 +50,7 @@ public class Window extends JFrame implements ActionListener {
     private ArrayList<Teams> zgłoszoneDrużyny = new ArrayList();
 
 
-    public void setUpDB(){
+    public void setUpDB() {
 
         service = new HungerGamesService();
         service.openConnection();
@@ -77,7 +78,7 @@ public class Window extends JFrame implements ActionListener {
         frame.setJMenuBar(addMenuBar());
         addComponents();
         frame.setSize(850, 500);
-        frame.setMinimumSize(new Dimension(850,500));
+        frame.setMinimumSize(new Dimension(850, 500));
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
@@ -114,12 +115,8 @@ public class Window extends JFrame implements ActionListener {
         nowaDruzynaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-
-
-
-                        String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.CANCEL_OPTION);
-                        if(nazwaNowejDruzyny!=null) {
-                            System.out.println(nazwaNowejDruzyny);
+                        String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny", "Tworzenie nowej drużyny", JOptionPane.CANCEL_OPTION);
+                        if (nazwaNowejDruzyny != null) {
                             service.addTeam(nazwaNowejDruzyny);
                             poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
                         }
@@ -132,17 +129,16 @@ public class Window extends JFrame implements ActionListener {
         gbc1.ipadx = 10;
         gbc1.ipady = 5;
         gbc1.insets = new Insets(5, 5, 5, 5);
-        panel1.add(new JLabel(""),gbc1);
-        gbc1.gridy=1;
-        panel1.add(nowaDruzynaButton,gbc1);
-        usunDruzyneButton= new JButton("Usuń drużynę");
+        panel1.add(new JLabel(""), gbc1);
+        gbc1.gridy = 1;
+        panel1.add(nowaDruzynaButton, gbc1);
+        usunDruzyneButton = new JButton("Usuń drużynę");
         usunDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        if(poleListyDrozyn.getSelectedValue() == null) {
+                        if (poleListyDrozyn.getSelectedValue() == null) {
                             JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
-                        }
-                        else {
+                        } else {
                             String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
                             service.deleteTeamFromGivenName(selectedTeam);
                             poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
@@ -152,18 +148,31 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc1.gridy = 2;
-        panel1.add(usunDruzyneButton,gbc1);
-        modyfikujDruzyneButton= new JButton("Modyfikuj drużynę");
+        panel1.add(usunDruzyneButton, gbc1);
+        modyfikujDruzyneButton = new JButton("Modyfikuj drużynę");
         modyfikujDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz druzyne do modyfikacji");
+
+                        String teamName = poleListyDrozyn.getSelectedValue().toString();
+                        String nowaNazwa = (String) JOptionPane.showInputDialog(null,"Modyfikacja drużyny","blabla",JOptionPane.PLAIN_MESSAGE,null,null,teamName);
+                        if(nowaNazwa == null){
+                            return;
+                        }
+                        Teams team = service.findTeamByName(teamName);
+                        try {
+                            service.modifyTeam(team,nowaNazwa);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "INVALID");
+                        }
                     }
                 }
         );
         gbc1.gridy = 3;
-        panel1.add(modyfikujDruzyneButton,gbc1);
-        zglosDruzyneButton= new JButton("Zgłoś drużynę");
+        panel1.add(modyfikujDruzyneButton, gbc1);
+        zglosDruzyneButton = new JButton("Zgłoś drużynę");
         zglosDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
@@ -182,8 +191,8 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc1.gridy = 4;
-        panel1.add(zglosDruzyneButton,gbc1);
-        wycofajDruzyneButton= new JButton("Wycofaj drużynę");
+        panel1.add(zglosDruzyneButton, gbc1);
+        wycofajDruzyneButton = new JButton("Wycofaj drużynę");
         wycofajDruzyneButton.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
@@ -270,7 +279,30 @@ public class Window extends JFrame implements ActionListener {
         nowySedziaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wstaw Nowa sedzia");
+                        JTextField field1 = new JTextField();
+                        JTextField field2 = new JTextField();
+                        JTextField field3 = new JTextField();
+
+                        Object [] fields = {
+                                "Imię", field1,
+                                "Nazwisko", field2,
+                                "Wiek", field3,
+                        };
+
+                        JOptionPane.showConfirmDialog(null,fields,"Dodaj nowego Sędziego",JOptionPane.OK_CANCEL_OPTION);
+
+                        String imieSedziego = field1.getText();
+                        String nazwiskoSedziego = field2.getText();
+                        String wiekSedziego = field3.getText();
+
+                        try {
+                                int wiek = Integer.parseInt(wiekSedziego);
+                                service.addJudge(imieSedziego, nazwiskoSedziego, wiek);
+                                poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "INVALID");
+                        }
                     }
                 }
         );
@@ -280,40 +312,77 @@ public class Window extends JFrame implements ActionListener {
         gbc2.ipadx = 10;
         gbc2.ipady = 5;
         gbc2.insets = new Insets(5, 5, 5, 5);
-        panel2.add(new JLabel(""),gbc2);
-        gbc2.gridy=1;
-        panel2.add(nowySedziaButton,gbc2);
-        usunSedziegoButton= new JButton("Usuń sędziego");
+        panel2.add(new JLabel(""), gbc2);
+        gbc2.gridy = 1;
+        panel2.add(nowySedziaButton, gbc2);
+        usunSedziegoButton = new JButton("Usuń sędziego");
         usunSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz sedziego do usuniecia");
+                        if (poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
+                        } else {
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            service.deleteTeamFromGivenName(selectedTeam);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+
+                        }
                     }
                 }
         );
         gbc2.gridy = 2;
-        panel2.add(usunSedziegoButton,gbc2);
-        modyfikujSedziegoButton= new JButton("Modyfikuj sędziego");
+        panel2.add(usunSedziegoButton, gbc2);
+        modyfikujSedziegoButton = new JButton("Modyfikuj sędziego");
         modyfikujSedziegoButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz sedziego do modyfikacji");
+                        JTextField field1 = new JTextField();
+                        JTextField field2 = new JTextField();
+                        JTextField field3 = new JTextField();
+
+                        String sedzia = poleListySedziow.getSelectedValue().toString();
+                        String[] sedziaSplit = sedzia.split("\\s+");
+                        field1.setText(sedziaSplit[0]);
+                        field2.setText(sedziaSplit[1]);
+                        field3.setText(sedziaSplit[2]);
+
+                        Object [] fields = {
+                                "Imię", field1,
+                                "Nazwisko", field2,
+                                "Wiek", field3,
+                        };
+
+                        JOptionPane.showConfirmDialog(null,fields,"Modyfikuj sędziego",JOptionPane.OK_CANCEL_OPTION);
+
+                        Judges judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+
+                        String imieSedziego = field1.getText();
+                        String nazwiskoSedziego = field2.getText();
+                        String wiekSedziego = field3.getText();
+
+                        try {
+                            int wiek = Integer.parseInt(wiekSedziego);
+                            service.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
+                            poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+
+                        } catch (Exception e){
+                            JOptionPane.showMessageDialog(null, "INVALID");
+                        }
                     }
                 }
         );
         gbc2.gridy = 3;
-        panel2.add(modyfikujSedziegoButton,gbc2);
+        panel2.add(modyfikujSedziegoButton, gbc2);
 
-        label3= new JLabel("Lista dostępnych sędziów",SwingConstants.CENTER);
+        label3 = new JLabel("Lista dostępnych sędziów", SwingConstants.CENTER);
         label3.setFont(new Font("Arial", Font.BOLD, 18));
         label3.setForeground(Color.BLACK);
         gbc2.gridx = 1;
         gbc2.gridy = 0;
-        panel2.add(label3,gbc2);
+        panel2.add(label3, gbc2);
 ///myk myk myk
-        // String[] listaDrozyn = {"Karol","Piotr","Damian"};
-        //poleListyDrozyn = new JList(listaDrozyn);
-        poleListySedziow = new JList();
+        String[] listaSedziow = service.getAllJudgesNames(service.findAllJudges());
+        poleListySedziow = new JList(listaSedziow);
         poleListySedziow.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         poleListySedziow.setLayoutOrientation(JList.VERTICAL_WRAP);
         poleListySedziow.setVisibleRowCount(-1);
@@ -323,10 +392,10 @@ public class Window extends JFrame implements ActionListener {
         JScrollPane listScroller3 = new JScrollPane(poleListySedziow);
         listScroller3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller3.setMinimumSize(new Dimension(200,230));
-        gbc2.gridx=1;
-        gbc2.gridy=1;
-        gbc2.gridheight=8;
+        listScroller3.setMinimumSize(new Dimension(200, 230));
+        gbc2.gridx = 1;
+        gbc2.gridy = 1;
+        gbc2.gridheight = 8;
         gbc2.insets = new Insets(5, 5, 5, 5);
         panel2.add(listScroller3, gbc2);
 
@@ -353,9 +422,9 @@ public class Window extends JFrame implements ActionListener {
         gbc3.ipadx = 10;
         gbc3.ipady = 5;
         gbc3.insets = new Insets(5, 5, 5, 5);
-        panel3.add(new JLabel(""),gbc3);
-        gbc2.gridy=1;
-        panel3.add(siatkowkaButton,gbc3);
+        panel3.add(new JLabel(""), gbc3);
+        gbc2.gridy = 1;
+        panel3.add(siatkowkaButton, gbc3);
         dwaOgnieButton = new JRadioButton("Turniej Dwóch Ogni");
         dwaOgnieButton.addActionListener(
                 new ActionListener() {
@@ -365,8 +434,8 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc3.gridy = 2;
-        panel3.add(dwaOgnieButton,gbc3);
-        przeciaganieLinyButton= new JRadioButton("Turniej Przeciągania Liny");
+        panel3.add(dwaOgnieButton, gbc3);
+        przeciaganieLinyButton = new JRadioButton("Turniej Przeciągania Liny");
         przeciaganieLinyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
@@ -375,13 +444,13 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc3.gridy = 3;
-        panel3.add(przeciaganieLinyButton,gbc3);
+        panel3.add(przeciaganieLinyButton, gbc3);
         konkurencjeButtons = new ButtonGroup();
         konkurencjeButtons.add(siatkowkaButton);
         konkurencjeButtons.add(dwaOgnieButton);
         konkurencjeButtons.add(przeciaganieLinyButton);
 
-        modyfikujMeczButton= new JButton("Modyfikuj Mecz");
+        modyfikujMeczButton = new JButton("Modyfikuj Mecz");
         modyfikujMeczButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
@@ -390,8 +459,8 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc3.gridy = 4;
-        panel3.add(modyfikujMeczButton,gbc3);
-        generujMeczeButton= new JButton("Generuj Mecze");
+        panel3.add(modyfikujMeczButton, gbc3);
+        generujMeczeButton = new JButton("Generuj Mecze");
         generujMeczeButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
@@ -400,14 +469,14 @@ public class Window extends JFrame implements ActionListener {
                 }
         );
         gbc3.gridy = 5;
-        panel3.add(generujMeczeButton,gbc3);
+        panel3.add(generujMeczeButton, gbc3);
 
-        label4= new JLabel("Lista meczów",SwingConstants.CENTER);
+        label4 = new JLabel("Lista meczów", SwingConstants.CENTER);
         label4.setFont(new Font("Arial", Font.BOLD, 18));
         label4.setForeground(Color.BLACK);
         gbc3.gridx = 1;
         gbc3.gridy = 0;
-        panel3.add(label4,gbc3);
+        panel3.add(label4, gbc3);
         String[] columnNames = {"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
         Object[][] data = {
                 {"Kathy", "Smith",
@@ -419,18 +488,16 @@ public class Window extends JFrame implements ActionListener {
         JScrollPane listScroller4 = new JScrollPane(table);
         listScroller4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller4.setMinimumSize(new Dimension(200,230));
+        listScroller4.setMinimumSize(new Dimension(200, 230));
         table.setFillsViewportHeight(true);
         gbc3.gridy = 1;
         gbc3.gridheight = 8;
-        panel3.add(listScroller4,gbc3);
+        panel3.add(listScroller4, gbc3);
         pane.addTab("Turniej", panel3);
 
 
         pane.addTab("Tablica Wyników", panel4);
     }
-
-
 
     @Override
     public void actionPerformed(ActionEvent e) {

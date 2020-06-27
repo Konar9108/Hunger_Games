@@ -10,7 +10,9 @@ import java.util.List;
 @NamedNativeQueries({
         @NamedNativeQuery(name = "allJudges", query = "select * from judges", resultClass = Judges.class),
 
-        @NamedNativeQuery(name = "findJudge", query = "select * from judges where judge_id = ?", resultClass = Judges.class)
+        @NamedNativeQuery(name = "findJudge", query = "select * from judges where judge_id = ?", resultClass = Judges.class),
+
+        @NamedNativeQuery(name = "findJudgeFirstNameLastNameAge", query = "select * from judges where first_name = ? AND last_name = ? AND age = ?", resultClass = Judges.class)
 
 })
 
