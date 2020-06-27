@@ -1,5 +1,6 @@
 package com.sda;
 
+import com.sda.entities.Teams;
 import com.sda.entities.TypeOfGame;
 import com.sda.jdbc.HungerGamesService;
 
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Window extends JFrame implements ActionListener {
 
@@ -44,6 +46,8 @@ public class Window extends JFrame implements ActionListener {
     private JRadioButton przeciaganieLinyButton;
     private JRadioButton dwaOgnieButton;
     private JTable table;
+    private ArrayList<Teams> zgłoszoneDrużyny = new ArrayList();
+
 
     public void setUpDB(){
 
@@ -63,7 +67,6 @@ public class Window extends JFrame implements ActionListener {
         service.addTeam("SDA", TypeOfGame.VOLLEYBALL);
         service.addTeam("ZSE", TypeOfGame.VOLLEYBALL);
         service.addTeam("BACKENDOWCY", TypeOfGame.VOLLEYBALL);
-
     }
 
     public void showGuiWindow() {
@@ -112,7 +115,10 @@ public class Window extends JFrame implements ActionListener {
                     public void actionPerformed(ActionEvent event) {
                         String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.OK_CANCEL_OPTION);
                         System.out.println(nazwaNowejDruzyny);
-                        service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                        if(nazwaNowejDruzyny!=null) {
+                            service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                        }
                     }
                 }
         );
@@ -139,7 +145,20 @@ public class Window extends JFrame implements ActionListener {
         modyfikujDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wybierz druzyne do modyfikacji");
+                        if(poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "wybierz druzyne do modyfikacji!");
+                        }
+                        else {
+                            JPanel panel = new JPanel();
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                            String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny","Tworzenie nowej drużyny", JOptionPane.OK_CANCEL_OPTION);
+                            System.out.println(nazwaNowejDruzyny);
+                            if(nazwaNowejDruzyny!=null) {
+                                service.addTeam(nazwaNowejDruzyny, TypeOfGame.VOLLEYBALL);
+                                poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                            }
+                        }
                     }
                 }
         );
@@ -149,7 +168,17 @@ public class Window extends JFrame implements ActionListener {
         zglosDruzyneButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "Ma przesunac wybraną z listy druzynę z lewej listy na prawą");
+                        if(poleListyDrozyn.getSelectedValue() == null) {
+                            JOptionPane.showMessageDialog(null, "Zaznacz drużynę z puli drużyn");
+                        }
+                        else {
+                            String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+                            Teams team = service.findTeamByName(selectedTeam);
+                            if(!zgłoszoneDrużyny.contains(team)){
+                                zgłoszoneDrużyny.add(team);
+                            }
+                            poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
+                        }
                     }
                 }
         );
@@ -157,11 +186,19 @@ public class Window extends JFrame implements ActionListener {
         panel1.add(zglosDruzyneButton,gbc1);
         wycofajDruzyneButton= new JButton("Wycofaj drużynę");
         wycofajDruzyneButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "Ma przesunac wybraną z listy druzynę z prawej listy na lewa");
+            new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    if(poleListyWybranychDrozyn.getSelectedValue() == null) {
+                        JOptionPane.showMessageDialog(null, "Zaznacz drużynę z puli drużyn");
+                    }
+                    else {
+                        String selectedTeam = poleListyWybranychDrozyn.getSelectedValue().toString();
+                        Teams team = service.findTeamByName(selectedTeam);
+                        zgłoszoneDrużyny.remove(team);
+                        poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
                     }
                 }
+            }
         );
         gbc1.gridy = 5;
         panel1.add(wycofajDruzyneButton,gbc1);
@@ -169,7 +206,7 @@ public class Window extends JFrame implements ActionListener {
         zglosLosoweDruzynyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        JOptionPane.showMessageDialog(null, "wrzuca losowe druzyny z lewej listy na prawą");
+                        poleListyWybranychDrozyn.setListData( service.getAllTeamNames(service.getRandomTeams()));
                     }
                 }
         );
@@ -191,13 +228,14 @@ public class Window extends JFrame implements ActionListener {
 ///myk myk myk
         // String[] listaDrozyn = {"Karol","Piotr","Damian"};
         //poleListyDrozyn = new JList(listaDrozyn);
-        poleListyDrozyn = new JList();
+        poleListyDrozyn = new JList(service.getAllTeamNames(service.findAllTeams()));
         poleListyDrozyn.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         poleListyDrozyn.setLayoutOrientation(JList.VERTICAL_WRAP);
         poleListyDrozyn.setVisibleRowCount(-1);
         poleListyDrozyn.setFont(new Font("Calibri", Font.BOLD, 18));
         poleListyDrozyn.setForeground(Color.BLACK);
         poleListyDrozyn.setPreferredSize(new Dimension(200, 400));
+
         JScrollPane listScroller = new JScrollPane(poleListyDrozyn);
         listScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -372,12 +410,28 @@ public class Window extends JFrame implements ActionListener {
         gbc3.gridy = 0;
         panel3.add(label4,gbc3);
         String[] columnNames = {"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
-
+        Object[][] data = {
+                {"Kathy", "Smith",
+                        "Snowboarding", "1-1", "Piotr", "ADV", "ADSWWWV"},
+                {"Kathy22", "Smith22",
+                        "Snowboarding22", "1-1", "Piotr22", "ADV22", "ADSWWWV22"},
+        };
+        JTable table = new JTable(data, columnNames);
+        JScrollPane listScroller4 = new JScrollPane(table);
+        listScroller4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        listScroller4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller4.setMinimumSize(new Dimension(200,230));
+        table.setFillsViewportHeight(true);
+        gbc3.gridy = 1;
+        gbc3.gridheight = 8;
+        panel3.add(listScroller4,gbc3);
         pane.addTab("Turniej", panel3);
 
 
         pane.addTab("Tablica Wyników", panel4);
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

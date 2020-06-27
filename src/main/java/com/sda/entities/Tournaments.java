@@ -11,6 +11,10 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Teams.class),
+
+})
 public class Tournaments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
