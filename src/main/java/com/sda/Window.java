@@ -1,9 +1,11 @@
 package com.sda;
 
-import com.sda.entities.Teams;
-import com.sda.entities.TypeOfGame;
-import com.sda.entities.Judges;
+import com.sda.entities.Team;
+import com.sda.entities.Tournament;
+import com.sda.entities.Judge;
+import com.sda.entities.GameType;
 import com.sda.jdbc.HungerGamesService;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+@Getter
 public class Window extends JFrame implements ActionListener {
 
     HungerGamesService service;
@@ -47,7 +50,9 @@ public class Window extends JFrame implements ActionListener {
     private JRadioButton przeciaganieLinyButton;
     private JRadioButton dwaOgnieButton;
     private JTable table;
-    private ArrayList<Teams> zgłoszoneDrużyny = new ArrayList();
+
+    private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
+    GameType gameType;
 
 
     public void setUpDB() {
@@ -159,7 +164,7 @@ public class Window extends JFrame implements ActionListener {
                         if(nowaNazwa == null){
                             return;
                         }
-                        Teams team = service.findTeamByName(teamName);
+                        Team team = service.findTeamByName(teamName);
                         try {
                             service.modifyTeam(team,nowaNazwa);
                             poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
@@ -181,11 +186,11 @@ public class Window extends JFrame implements ActionListener {
                         }
                         else {
                             String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
-                            Teams team = service.findTeamByName(selectedTeam);
-                            if(!zgłoszoneDrużyny.contains(team)){
-                                zgłoszoneDrużyny.add(team);
+                            Team team = service.findTeamByName(selectedTeam);
+                            if(!zgloszoneDruzyny.contains(team)){
+                                zgloszoneDruzyny.add(team);
                             }
-                            poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
+                            poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgloszoneDruzyny));
                         }
                     }
                 }
@@ -201,9 +206,9 @@ public class Window extends JFrame implements ActionListener {
                     }
                     else {
                         String selectedTeam = poleListyWybranychDrozyn.getSelectedValue().toString();
-                        Teams team = service.findTeamByName(selectedTeam);
-                        zgłoszoneDrużyny.remove(team);
-                        poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgłoszoneDrużyny));
+                        Team team = service.findTeamByName(selectedTeam);
+                        zgloszoneDruzyny.remove(team);
+                        poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgloszoneDruzyny));
                     }
                 }
             }
@@ -214,7 +219,8 @@ public class Window extends JFrame implements ActionListener {
         zglosLosoweDruzynyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        poleListyWybranychDrozyn.setListData( service.getAllTeamNames(service.getRandomTeams()));
+                        zgloszoneDruzyny = service.getRandomTeams();
+                        poleListyWybranychDrozyn.setListData( service.getAllTeamNames(zgloszoneDruzyny));
                     }
                 }
         );
@@ -330,7 +336,7 @@ public class Window extends JFrame implements ActionListener {
                         field3.setText(sedziaSplit[2]);
 
 
-                        Judges judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+                        Judge judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
                         try {
                             service.deleteJudge(judge);
                             poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
@@ -365,7 +371,7 @@ public class Window extends JFrame implements ActionListener {
 
                         JOptionPane.showConfirmDialog(null,fields,"Modyfikuj sędziego",JOptionPane.OK_CANCEL_OPTION);
 
-                        Judges judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+                        Judge judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
 
                         String imieSedziego = field1.getText();
                         String nazwiskoSedziego = field2.getText();
@@ -422,8 +428,7 @@ public class Window extends JFrame implements ActionListener {
         siatkowkaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-
-                        /////////////// tu dać akcje którą robi
+                        gameType = GameType.VOLLEYBALL;
                     }
                 }
         );
@@ -440,7 +445,7 @@ public class Window extends JFrame implements ActionListener {
         dwaOgnieButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        /////////////// tu dać akcje którą robi
+                        gameType = GameType.DODGEBALL;
                     }
                 }
         );
@@ -450,7 +455,7 @@ public class Window extends JFrame implements ActionListener {
         przeciaganieLinyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        /////////////// tu dać akcje którą robi
+                        gameType = GameType.TUG_OF_WAR;
                     }
                 }
         );
@@ -460,6 +465,8 @@ public class Window extends JFrame implements ActionListener {
         konkurencjeButtons.add(siatkowkaButton);
         konkurencjeButtons.add(dwaOgnieButton);
         konkurencjeButtons.add(przeciaganieLinyButton);
+
+
 
         modyfikujMeczButton = new JButton("Modyfikuj Mecz");
         modyfikujMeczButton.addActionListener(
@@ -475,7 +482,12 @@ public class Window extends JFrame implements ActionListener {
         generujMeczeButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        /////////////// tu dać akcje którą robi
+                        Tournament tournament = new Tournament();
+                        tournament.setJudgeList(service.getRandomJudges());
+                        tournament.setTeamList(zgloszoneDruzyny);
+                        tournament.setGameType(gameType);
+                        System.out.println(tournament.toString());
+
                     }
                 }
         );

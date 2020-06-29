@@ -12,44 +12,44 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @NamedNativeQueries({
-        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Teams.class),
+        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Team.class),
 
 })
-public class Tournaments {
+public class Tournament {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int tournament_id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Type", length = 15)
-    private TypeOfGame typeOfGame;
+    private GameType gameType;
 
     @ManyToMany
     @JoinTable(name = "tournaments_judges",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "judge_id"))
-    List<Judges> judgesList;
+    List<Judge> judgeList;
 
 
     @ManyToMany
     @JoinTable(name = "tournaments_teams",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    List<Teams> teamsList;
+    List<Team> teamList;
 
     @ManyToMany
     @JoinTable(name = "tournaments_matches",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "match_id"))
-            List<Matches> matchesList;
+            List<Game> gameList;
 
     @Override
     public String toString() {
         return "Tournaments{" +
                 "tournament_id=" + tournament_id +
-                ", typeOfGame=" + typeOfGame +
-                ", judgesList=" + judgesList +
-                ", teamsList=" + teamsList +
+                ", typeOfGame=" + gameType +
+                ", judgesList=" + judgeList +
+                ", teamsList=" + teamList +
                 '}';
     }
 }

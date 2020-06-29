@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Matches {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int match_id;
@@ -19,27 +19,27 @@ public class Matches {
 
     @OneToOne
     @JoinColumn(referencedColumnName = "team_id", name = "Drużyna_1_id")
-    private Teams teamOne;
+    private Team teamOne;
 
     @OneToOne
     @JoinColumn(referencedColumnName = "team_id", name = "Drużyna_2_id")
-    private Teams teamTwo;
+    private Team teamTwo;
 
     @OneToOne
     @JoinColumn(referencedColumnName = "team_id", name = "Zwycięzca_id")
-    private Teams winnerTeam;
+    private Team winnerTeam;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "judge_id")
-    private Judges mainJudge;
+    private Judge mainJudge;
 
     @Column(name = "Wynik")
     private String result;
 
     @OneToOne
     @JoinColumn(referencedColumnName = "tournament_id", name = "Turniej_id")
-    private Tournaments tournament;
+    private Tournament tournament;
 
 
 }

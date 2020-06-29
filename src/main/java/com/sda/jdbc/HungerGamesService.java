@@ -34,7 +34,7 @@ public class HungerGamesService {
     }
 
     public void addJudge(String firstName, String lastName, int age) {
-        Judges judge = new Judges();
+        Judge judge = new Judge();
         judge.setFirst_name(firstName);
         judge.setLast_name(lastName);
         judge.setAge(age);
@@ -43,7 +43,7 @@ public class HungerGamesService {
         entityManager.getTransaction().commit();
     }
 
-    public void modifyJudge (Judges judge,String firstName, String lastName, int age){
+    public void modifyJudge (Judge judge, String firstName, String lastName, int age){
 judge.setAge(age);
 judge.setFirst_name(firstName);
 judge.setLast_name(lastName);
@@ -53,10 +53,10 @@ entityManager.flush();
 entityManager.getTransaction().commit();
     }
 
-    public Judges findJudgeFromNameAndLastNameAndAge(String firstName, String lastName, int age) {
-        TypedQuery query = entityManager.createNamedQuery("findJudgeFirstNameLastNameAge", Judges.class)
+    public Judge findJudgeFromNameAndLastNameAndAge(String firstName, String lastName, int age) {
+        TypedQuery query = entityManager.createNamedQuery("findJudgeFirstNameLastNameAge", Judge.class)
                 .setParameter(1,firstName).setParameter(2,lastName).setParameter(3,age);
-        return (Judges)query.getSingleResult();
+        return (Judge)query.getSingleResult();
     }
 
 
@@ -68,7 +68,7 @@ entityManager.getTransaction().commit();
 //        entityManager.getTransaction().commit();
 //    }
 
-    public void deleteJudge(Judges judge) {
+    public void deleteJudge(Judge judge) {
         entityManager.getTransaction().begin();
         entityManager.remove(judge);
         entityManager.flush();
@@ -76,9 +76,9 @@ entityManager.getTransaction().commit();
     }
 
 
-    private Judges findJudgeById(int id) {
-        TypedQuery query = entityManager.createNamedQuery("findJudge", Judges.class).setParameter(1,id);
-        return (Judges)query.getSingleResult();
+    private Judge findJudgeById(int id) {
+        TypedQuery query = entityManager.createNamedQuery("findJudge", Judge.class).setParameter(1,id);
+        return (Judge)query.getSingleResult();
     }
 
 //    public void printJudges() {
@@ -91,13 +91,13 @@ entityManager.getTransaction().commit();
 //        }
 //    }
 
-    public List<Judges> findAllJudges() {
-        TypedQuery<Judges> query = entityManager.createNamedQuery("allJudges", Judges.class);
+    public List<Judge> findAllJudges() {
+        TypedQuery<Judge> query = entityManager.createNamedQuery("allJudges", Judge.class);
         return query.getResultList();
     }
 
     public void addTeam(String name) {
-        Teams team = new Teams();
+        Team team = new Team();
         team.setName(name);
         entityManager.getTransaction().begin();
         entityManager.persist(team);
@@ -115,20 +115,20 @@ entityManager.getTransaction().commit();
     public void deleteTeamFromGivenName(String name) {
 
         entityManager.getTransaction().begin();
-        TypedQuery<Teams> query = entityManager.createNamedQuery("findTeamFromName",Teams.class);
+        TypedQuery<Team> query = entityManager.createNamedQuery("findTeamFromName", Team.class);
         query.setParameter(1, name);
-        Teams team = query.getSingleResult();
+        Team team = query.getSingleResult();
         entityManager.remove(team);
         entityManager.flush();
         entityManager.getTransaction().commit();
     }
 
-    public List<Teams> findAllTeams() {
-        TypedQuery<Teams> query = entityManager.createNamedQuery("allTeams", Teams.class);
+    public List<Team> findAllTeams() {
+        TypedQuery<Team> query = entityManager.createNamedQuery("allTeams", Team.class);
         return query.getResultList();
     }
 
-    public String[] getAllTeamNames(List<Teams> teams) {
+    public String[] getAllTeamNames(List<Team> teams) {
         String[] allTeamsNames = new String[teams.size()];
         for (int i = 0; i < teams.size(); i++) {
             allTeamsNames[i] = teams.get(i).getName();
@@ -136,7 +136,7 @@ entityManager.getTransaction().commit();
         return allTeamsNames;
     }
 
-    public String[] getAllJudgesNames(List<Judges> judges) {
+    public String[] getAllJudgesNames(List<Judge> judges) {
         String[] allJudgesNames = new String[judges.size()];
         for (int i = 0; i < judges.size(); i++) {
             allJudgesNames[i] = (judges.get(i).getFirst_name() + " " + judges.get(i).getLast_name() + " " + judges.get(i).getAge());
@@ -149,19 +149,19 @@ entityManager.getTransaction().commit();
 //        return (Teams)query.getSingleResult();
 //    }
 
-    public Teams getRandomTeam(List<Teams> teams){
-        List<Teams> allTeams = teams;
+    public Team getRandomTeam(List<Team> teams){
+        List<Team> allTeams = teams;
         Random random = new Random();
-        Teams team = allTeams.get(random.nextInt(allTeams.size()));
+        Team team = allTeams.get(random.nextInt(allTeams.size()));
         return team;
     }
 
-    public Teams findTeamByName(String name) {
-        TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Teams.class).setParameter(1,name);
-        return (Teams)query.getSingleResult();
+    public Team findTeamByName(String name) {
+        TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Team.class).setParameter(1,name);
+        return (Team)query.getSingleResult();
     }
 
-    public void modifyTeam (Teams team, String name){
+    public void modifyTeam (Team team, String name){
         team.setName(name);
 
         entityManager.getTransaction().begin();
@@ -172,21 +172,21 @@ entityManager.getTransaction().commit();
 
 
 
-    public List<Teams> getRandomTeams(){
-        List<Teams> allTeams = this.findAllTeams();
+    public ArrayList<Team> getRandomTeams(){
+        List<Team> allTeams = this.findAllTeams();
         Random random = new Random();
         int numberOfTeams = random.nextInt(allTeams.size());
         if(numberOfTeams<2) numberOfTeams=2;
-        List<Teams> teamsForTournament = new ArrayList();
+        ArrayList<Team> teamForTournament = new ArrayList();
         for(int i=0;i<numberOfTeams;i++){
-            Teams team = allTeams.get(random.nextInt(allTeams.size()));
-            teamsForTournament.add(team);
+            Team team = allTeams.get(random.nextInt(allTeams.size()));
+            teamForTournament.add(team);
             allTeams.remove(team);
         }
-        return teamsForTournament;
+        return teamForTournament;
     }
 
-    public void randomizeMatchResult(Matches match) throws IndexOutOfBoundsException {
+    public void randomizeMatchResult(Game match) throws IndexOutOfBoundsException {
 
         if(match == null){
             throw new IndexOutOfBoundsException("ERROR: Empty Match");
@@ -208,13 +208,13 @@ entityManager.getTransaction().commit();
 
     }
 
-    public void generateMatch(Tournaments tournament, Teams teamOne, Teams teamTwo){
-        Matches match = new Matches();
+    public void generateMatch(Tournament tournament, Team teamOne, Team teamTwo){
+        Game match = new Game();
         Random rand = new Random();
 
-        int randomJudgeIdFromTournament = rand.nextInt(tournament.getJudgesList().size());
+        int randomJudgeIdFromTournament = rand.nextInt(tournament.getJudgeList().size());
 
-        Judges judge = findJudgeById(randomJudgeIdFromTournament);
+        Judge judge = findJudgeById(randomJudgeIdFromTournament);
         match.setTournament(tournament);
         match.setMainJudge(judge);
         match.setTeamOne(teamOne);
@@ -230,34 +230,34 @@ entityManager.getTransaction().commit();
 
 
 
-    public void generateTournamentMatches(Tournaments tournament){
-    List<List<Teams>> DimensionalListofTeams;
+    public void generateTournamentMatches(Tournament tournament){
+    List<List<Team>> DimensionalListofTeams;
 
 
     }
 
 
 
-    public List<Judges> getRandomJudges(){
-        List<Judges> allJudges = this.findAllJudges();
+    public List<Judge> getRandomJudges(){
+        List<Judge> allJudges = this.findAllJudges();
         Random random = new Random();
         int numberOfJudges = random.nextInt(allJudges.size());
         if(numberOfJudges<3) numberOfJudges=3;
-        List<Judges> judgesForTournament = new ArrayList();
+        List<Judge> judgeForTournament = new ArrayList();
         for(int i=0;i<numberOfJudges;i++){
-            Judges judge = allJudges.get(random.nextInt(allJudges.size()));
-            judgesForTournament.add(judge);
+            Judge judge = allJudges.get(random.nextInt(allJudges.size()));
+            judgeForTournament.add(judge);
             allJudges.remove(judge);
         }
-        return judgesForTournament;
+        return judgeForTournament;
     }
 
     //DO SPRAWDZENIA
-    public Tournaments generateTournamentWithRandomTeams(TypeOfGame typeOfGame){
-        Tournaments tournament = new Tournaments();
-        tournament.setTeamsList(getRandomTeams());
-        tournament.setJudgesList(getRandomJudges());
-        tournament.setTypeOfGame(typeOfGame);
+    public Tournament generateTournamentWithRandomTeams(GameType gameType){
+        Tournament tournament = new Tournament();
+        tournament.setTeamList(getRandomTeams());
+        tournament.setJudgeList(getRandomJudges());
+        tournament.setGameType(gameType);
 
         entityManager.getTransaction().begin();
         entityManager.persist(tournament);

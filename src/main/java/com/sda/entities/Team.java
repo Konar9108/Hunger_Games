@@ -7,11 +7,11 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @NamedNativeQueries({
-        @NamedNativeQuery(name = "allTeams", query = "select * from teams ORDER BY Nazwa", resultClass = Teams.class),
+        @NamedNativeQuery(name = "allTeams", query = "select * from team ORDER BY Nazwa", resultClass = Team.class),
 
-        @NamedNativeQuery(name = "findTeam", query = "select * from teams where team_id = ?", resultClass = Teams.class),
+        @NamedNativeQuery(name = "findTeam", query = "select * from team where team_id = ?", resultClass = Team.class),
 
-        @NamedNativeQuery(name = "findTeamFromName", query = "select * from teams where Nazwa = ?", resultClass = Teams.class)
+        @NamedNativeQuery(name = "findTeamFromName", query = "select * from team where Nazwa = ?", resultClass = Team.class)
 
 })
 
@@ -20,7 +20,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Teams {
+public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int team_id;
@@ -32,7 +32,7 @@ public class Teams {
 
     @Override
     public String toString() {
-        return "Teams{" +
+        return "Team{" +
                 "team_id=" + team_id +
                 ", name='" + name + '\'' +
                 '}';

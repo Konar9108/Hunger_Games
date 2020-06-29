@@ -1,6 +1,6 @@
 package com.sda.jdbc;
 
-import com.sda.entities.Judges;
+import com.sda.entities.Judge;
 import org.junit.jupiter.api.Test;
 
 
@@ -40,7 +40,7 @@ class HungerGamesServiceTest {
 
         hungerGamesService.openConnection();
 
-        Judges judge = new Judges();
+        Judge judge = new Judge();
         judge.setFirst_name("Damian");
         judge.setLast_name("Damianovic");
         judge.setAge(28);
@@ -50,7 +50,7 @@ class HungerGamesServiceTest {
 
         int id = judge.getJudge_id();
 
-        assertNotNull( hungerGamesService.getEntityManager().find(Judges.class, id));
+        assertNotNull( hungerGamesService.getEntityManager().find(Judge.class, id));
 
     }
 
