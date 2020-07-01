@@ -9,9 +9,7 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 @Getter
@@ -52,7 +50,7 @@ public class Window extends JFrame implements ActionListener {
     private JTable table;
 
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
-    GameType gameType;
+    GameType gameType = GameType.VOLLEYBALL;
 
 
     public void setUpDB() {
@@ -76,10 +74,24 @@ public class Window extends JFrame implements ActionListener {
 
     }
 
+    public void exitListener() {
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                service.closeConnection();
+                System.out.println("zamknięto polaczenie do db i aplikację");
+                System.exit(0);
+            }
+        });
+    }
+
+
+
+
     public void showGuiWindow() {
+
         setUpDB();
         frame = new JFrame("System zarządzania turniejem");
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setJMenuBar(addMenuBar());
         addComponents();
         frame.setSize(850, 500);
@@ -109,6 +121,7 @@ public class Window extends JFrame implements ActionListener {
     }
 
     private void addComponents() {
+        exitListener();
         pane = new JTabbedPane();
         frame.add(pane);
         ////////////////////////////////////////////////////////////////////////////Pane 1
@@ -483,10 +496,21 @@ public class Window extends JFrame implements ActionListener {
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
                         Tournament tournament = new Tournament();
-                        tournament.setJudgeList(service.getRandomJudges());
                         tournament.setTeamList(zgloszoneDruzyny);
+                        if(zgloszoneDruzyny.size() < 3) {
+                            JOptionPane.showMessageDialog(null, "Za mało zgłoszonych drużyn! Muszą być przynajmniej 3!");
+                            return;
+                        }
+                        tournament.setJudgeList(service.getRandomJudges());
+
+
+
                         tournament.setGameType(gameType);
-                        System.out.println(tournament.toString());
+                        service.getEntityManager().getTransaction().begin();
+                        service.getEntityManager().persist(tournament);
+                        service.getEntityManager().getTransaction().commit();
+
+                        service.generateTournamentMatches(tournament);
 
                     }
                 }

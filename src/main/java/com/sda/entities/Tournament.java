@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,20 +29,20 @@ public class Tournament {
     @JoinTable(name = "tournaments_judges",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "judge_id"))
-    List<Judge> judgeList;
+   private List<Judge> judgeList;
 
 
     @ManyToMany
     @JoinTable(name = "tournaments_teams",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    List<Team> teamList;
+   private List<Team> teamList;
 
     @ManyToMany
     @JoinTable(name = "tournaments_matches",
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "match_id"))
-            List<Game> gameList;
+          private List<Game> gameList = new ArrayList<>();
 
     @Override
     public String toString() {

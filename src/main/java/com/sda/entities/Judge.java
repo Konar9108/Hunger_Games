@@ -38,8 +38,8 @@ public class Judge {
     @Column
     private int Age;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Game> matches = new LinkedList<>();
+//    @OneToMany(cascade = CascadeType.ALL)
+//    private List<Game> matches = new LinkedList<>();
 
 }
 
