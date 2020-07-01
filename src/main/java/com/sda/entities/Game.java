@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-
+@NamedNativeQueries({
+        @NamedNativeQuery(name = "findGameById", query = "select * from game where match_id = ?", resultClass = Game.class),
+})
 @Entity
 @Setter
 @Getter

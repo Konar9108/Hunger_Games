@@ -138,7 +138,10 @@ public class HungerGamesService {
         TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Team.class).setParameter(1, name);
         return (Team) query.getSingleResult();
     }
-
+    public Game findGameById(int gameId) {
+        TypedQuery query = entityManager.createNamedQuery("findGameById", Game.class).setParameter(1, gameId);
+        return (Game) query.getSingleResult();
+    }
     public void modifyTeam(Team team, String name) {
         team.setName(name);
 
@@ -147,7 +150,14 @@ public class HungerGamesService {
         entityManager.flush();
         entityManager.getTransaction().commit();
     }
-
+    public void modifyGame(int gameId, String score) {
+        Game game = findGameById(gameId);
+        game.setResult(score);
+        entityManager.getTransaction().begin();
+        entityManager.persist(game);
+        entityManager.flush();
+        entityManager.getTransaction().commit();
+    }
 
     public ArrayList<Team> getRandomTeams() {
         List<Team> allTeams = findAllTeams();

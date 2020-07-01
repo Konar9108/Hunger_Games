@@ -1,16 +1,15 @@
 package com.sda;
 
-import com.sda.entities.Team;
-import com.sda.entities.Tournament;
-import com.sda.entities.Judge;
-import com.sda.entities.GameType;
+import com.sda.entities.*;
 import com.sda.jdbc.HungerGamesService;
 import lombok.Getter;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class Window extends JFrame implements ActionListener {
@@ -52,6 +51,8 @@ public class Window extends JFrame implements ActionListener {
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
     private GameType gameType = GameType.VOLLEYBALL;
     private Tournament tournament;
+    private DefaultTableModel model;
+    private  List<Game> gameList;
 
 
     public void setUpDB() {
@@ -482,11 +483,48 @@ public class Window extends JFrame implements ActionListener {
 
 
 
-        modyfikujMeczButton = new JButton("Modyfikuj Mecz");
+        modyfikujMeczButton = new JButton("Modyfikuj wynik meczu");
         modyfikujMeczButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        /////////////// tu dać akcje którą robi
+                        int row = table.getSelectedRow();
+                        if(row ==-1) JOptionPane.showMessageDialog(null, "Zaznacz mecz do wstawienia wyniku");
+                        else {
+                            JTextField field11 = new JTextField();
+                            JTextField field21 = new JTextField();
+                            String wynik = (String)table.getValueAt(row,4).toString();
+                            field11.setText("");
+                            field21.setText("");
+                            Object [] fields1 = {
+                                    "Wynik drużyny: " + table.getValueAt(row,1).toString(), field11,
+                                    "Wynik drużyny: " + table.getValueAt(row,2).toString(), field21,
+                            };
+
+                            JOptionPane.showConfirmDialog(null,fields1,"Modyfikuj wynik meczu",JOptionPane.OK_CANCEL_OPTION);
+
+//                                for(Game g : gameList) {
+//                                    if(table.getValueAt(row, 0).toString() == String.valueOf(g.getMatch_id())) {
+//                                        g.setResult(field11.getText()+ "-"+field21.getText());
+//                                    }
+//                                }
+
+                            String score = field11.getText()+ "-"+field21.getText();
+                            service.modifyGame((Integer) table.getValueAt(row, 0),score);
+                            refreshGameJTable();
+//
+//                            String imieSedziego = field1.getText();
+//                            String nazwiskoSedziego = field2.getText();
+//                            String wiekSedziego = field3.getText();
+//
+//                            try {
+//                                int wiek = Integer.parseInt(wiekSedziego);
+//                                service.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
+//                                poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+//
+//                            } catch (Exception e){
+//                                JOptionPane.showMessageDialog(null, "INVALID");
+//                            }
+                        }
                     }
                 }
         );
@@ -496,23 +534,22 @@ public class Window extends JFrame implements ActionListener {
         generujMeczeButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        tournament = new Tournament();
-                        tournament.setTeamList(zgloszoneDruzyny);
-                        if(zgloszoneDruzyny.size() < 3) {
-                            JOptionPane.showMessageDialog(null, "Za mało zgłoszonych drużyn! Muszą być przynajmniej 3!");
-                            return;
-                        }
-                        tournament.setJudgeList(service.getRandomJudges());
-
-
-
-                        tournament.setGameType(gameType);
-                        service.getEntityManager().getTransaction().begin();
-                        service.getEntityManager().persist(tournament);
-                        service.getEntityManager().getTransaction().commit();
-
-                        service.generateTournamentMatches(tournament);
-
+                            int input = JOptionPane.showConfirmDialog(null, "Czy na pewno chcesz utworzyć nowy turniej?", "Uwaga!",JOptionPane.YES_NO_OPTION);
+                            if(input==JOptionPane.YES_OPTION) {
+                                tournament = new Tournament();
+                                tournament.setTeamList(zgloszoneDruzyny);
+                                if (zgloszoneDruzyny.size() < 3) {
+                                    JOptionPane.showMessageDialog(null, "Za mało zgłoszonych drużyn! Muszą być przynajmniej 3!");
+                                    return;
+                                }
+                                tournament.setJudgeList(service.getRandomJudges());
+                                tournament.setGameType(gameType);
+                                service.getEntityManager().getTransaction().begin();
+                                service.getEntityManager().persist(tournament);
+                                service.getEntityManager().getTransaction().commit();
+                                service.generateTournamentMatches(tournament);
+                                refreshGameJTable();
+                            }
                     }
                 }
         );
@@ -525,18 +562,22 @@ public class Window extends JFrame implements ActionListener {
         gbc3.gridx = 1;
         gbc3.gridy = 0;
         panel3.add(label4, gbc3);
-        String[] columnNames = {"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
-        Object[][] data = {
-                {"Kathy", "Smith",
-                        "Snowboarding", "1-1", "Piotr", "ADV", "ADSWWWV"},
-                {"Kathy22", "Smith22",
-                        "Snowboarding22", "1-1", "Piotr22", "ADV22", "ADSWWWV22"},
+        String[] columnNames = {"ID meczu","Drużyna 1", "Drużyna 2", "Wynik", "Sędzia"};
+        model = new DefaultTableModel();
+        model.setColumnIdentifiers(columnNames);
+        table = new JTable() {
+            public boolean editCellAt(int row, int column, java.util.EventObject e) {
+                return false;
+            }
         };
-        JTable table = new JTable(data, columnNames);
+        table.setModel(model);
+        table.setFont(new Font("Arial",0,14));
+
         JScrollPane listScroller4 = new JScrollPane(table);
         listScroller4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         listScroller4.setMinimumSize(new Dimension(200, 230));
+        table.setAutoCreateRowSorter(true);
         table.setFillsViewportHeight(true);
         gbc3.gridy = 1;
         gbc3.gridheight = 8;
@@ -545,6 +586,21 @@ public class Window extends JFrame implements ActionListener {
 
 
         pane.addTab("Tablica Wyników", panel4);
+    }
+    //{"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
+    void refreshGameJTable() {
+        gameList = tournament.getGameList();
+        model.setRowCount(0);
+        for (int i = 0; i<gameList.size(); i++) {
+            int col0 = gameList.get(i).getMatch_id();
+            String col1 = gameList.get(i).getTeamOne().getName();
+            String col2 = gameList.get(i).getTeamTwo().getName();
+            String col3 = gameList.get(i).getResult();
+            String col4 = gameList.get(i).getMainJudge().getFirst_name() + " " + gameList.get(i).getMainJudge().getLast_name();
+            Object[] objs = {col0, col1,col2,col3,col4};
+            model.addRow(objs);
+
+        }
     }
 
     @Override
