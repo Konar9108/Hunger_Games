@@ -50,7 +50,8 @@ public class Window extends JFrame implements ActionListener {
     private JTable table;
 
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
-    GameType gameType = GameType.VOLLEYBALL;
+    private GameType gameType = GameType.VOLLEYBALL;
+    private Tournament tournament;
 
 
     public void setUpDB() {
@@ -495,7 +496,7 @@ public class Window extends JFrame implements ActionListener {
         generujMeczeButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        Tournament tournament = new Tournament();
+                        tournament = new Tournament();
                         tournament.setTeamList(zgloszoneDruzyny);
                         if(zgloszoneDruzyny.size() < 3) {
                             JOptionPane.showMessageDialog(null, "Za mało zgłoszonych drużyn! Muszą być przynajmniej 3!");

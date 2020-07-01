@@ -197,7 +197,7 @@ public class HungerGamesService {
         match.setTeamOne(teamOne);
         match.setTeamTwo(teamTwo);
 
-        randomizeMatchResult(match);
+        //randomizeMatchResult(match);
 
         entityManager.getTransaction().begin();
         entityManager.persist(match);
