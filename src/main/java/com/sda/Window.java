@@ -480,9 +480,6 @@ public class Window extends JFrame implements ActionListener {
         konkurencjeButtons.add(siatkowkaButton);
         konkurencjeButtons.add(dwaOgnieButton);
         konkurencjeButtons.add(przeciaganieLinyButton);
-
-
-
         modyfikujMeczButton = new JButton("Modyfikuj wynik meczu");
         modyfikujMeczButton.addActionListener(
                 new ActionListener() {
@@ -499,31 +496,10 @@ public class Window extends JFrame implements ActionListener {
                                     "Wynik drużyny: " + table.getValueAt(row,1).toString(), field11,
                                     "Wynik drużyny: " + table.getValueAt(row,2).toString(), field21,
                             };
-
                             JOptionPane.showConfirmDialog(null,fields1,"Modyfikuj wynik meczu",JOptionPane.OK_CANCEL_OPTION);
-
-//                                for(Game g : gameList) {
-//                                    if(table.getValueAt(row, 0).toString() == String.valueOf(g.getMatch_id())) {
-//                                        g.setResult(field11.getText()+ "-"+field21.getText());
-//                                    }
-//                                }
-
                             String score = field11.getText()+ "-"+field21.getText();
                             service.modifyGame((Integer) table.getValueAt(row, 0),score);
                             refreshGameJTable();
-//
-//                            String imieSedziego = field1.getText();
-//                            String nazwiskoSedziego = field2.getText();
-//                            String wiekSedziego = field3.getText();
-//
-//                            try {
-//                                int wiek = Integer.parseInt(wiekSedziego);
-//                                service.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
-//                                poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
-//
-//                            } catch (Exception e){
-//                                JOptionPane.showMessageDialog(null, "INVALID");
-//                            }
                         }
                     }
                 }
