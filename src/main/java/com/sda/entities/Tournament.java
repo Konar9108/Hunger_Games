@@ -13,7 +13,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @NamedNativeQueries({
-        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Team.class),
+        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Team.class)
+
 
 })
 public class Tournament {
@@ -25,10 +26,7 @@ public class Tournament {
     @Column(name = "Type", length = 15)
     private GameType gameType;
 
-    @ManyToMany
-    @JoinTable(name = "tournaments_judges",
-            joinColumns = @JoinColumn(name = "tournament_id"),
-            inverseJoinColumns = @JoinColumn(name = "judge_id"))
+ @Transient
    private List<Judge> judgeList;
 
 
@@ -38,10 +36,11 @@ public class Tournament {
             inverseJoinColumns = @JoinColumn(name = "team_id"))
    private List<Team> teamList;
 
-    @ManyToMany
-    @JoinTable(name = "tournaments_matches",
-            joinColumns = @JoinColumn(name = "tournament_id"),
-            inverseJoinColumns = @JoinColumn(name = "match_id"))
+//    @ManyToMany
+//    @JoinTable(name = "tournaments_matches",
+//            joinColumns = @JoinColumn(name = "tournament_id"),
+//            inverseJoinColumns = @JoinColumn(name = "match_id"))
+    @Transient
           private List<Game> gameList = new ArrayList<>();
 
     @Override

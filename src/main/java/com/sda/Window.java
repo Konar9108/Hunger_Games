@@ -503,6 +503,7 @@ public class Window extends JFrame implements ActionListener {
                             String score = field11.getText()+ "-"+field21.getText();
                             service.modifyGame((Integer) table.getValueAt(row, 0),score);
                             refreshGameJTable();
+                            service.getResultsFromTournament();
                         }
                     }
                 }

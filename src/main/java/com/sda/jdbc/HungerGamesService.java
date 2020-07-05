@@ -1,14 +1,12 @@
 package com.sda.jdbc;
 
 import com.sda.entities.*;
+import org.hibernate.SQLQuery;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import javax.persistence.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
 
 public class HungerGamesService {
 
@@ -150,6 +148,28 @@ public class HungerGamesService {
         entityManager.flush();
         entityManager.getTransaction().commit();
     }
+
+    public List getResultsFromTournament() {
+
+
+        String sql = "SELECT t.nazwa, count(Zwycięzca_id) punkty FROM tournaments_teams tt\n" +
+                "left join game g on g.Zwycięzca_id = tt.team_id\n" +
+                "join team t on t.team_id = tt.team_id\n" +
+                "group by t.nazwa\n" +
+                "order by count(g.zwycięzca_id) desc;";
+
+
+        Query query = entityManager.createNativeQuery(sql); //no entity mapping
+        List<Object[]> list = query.getResultList();
+
+//        for (int i = 0; i < list.size(); i++) {
+//            System.out.print(list.get(i)[0] + " ");
+//            System.out.println(list.get(i)[1]);
+//        }
+return list;
+
+    }
+
     public void modifyGame(int gameId, String score) {
         Game game = findGameById(gameId);
         game.setResult(score);
