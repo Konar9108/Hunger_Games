@@ -25,6 +25,7 @@ public class Window extends JFrame implements ActionListener {
     private JLabel label2;
     private JLabel label3;
     private JLabel label4;
+    private JLabel label5;
 
 
     private JList poleListyDrozyn;
@@ -47,11 +48,13 @@ public class Window extends JFrame implements ActionListener {
     private JRadioButton przeciaganieLinyButton;
     private JRadioButton dwaOgnieButton;
     private JTable table;
+    private JTable table2;
 
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
     private GameType gameType = GameType.VOLLEYBALL;
     private Tournament tournament;
     private DefaultTableModel model;
+    private DefaultTableModel model2;
     private  List<Game> gameList;
 
 
@@ -559,7 +562,42 @@ public class Window extends JFrame implements ActionListener {
         gbc3.gridheight = 8;
         panel3.add(listScroller4, gbc3);
         pane.addTab("Turniej", panel3);
+//////////////////////////////////////////////////////////////////////////////////////////////////////Pane 4
+        panel4 = new JPanel();
+        GridBagLayout layout4 = new GridBagLayout();
+        panel4.setLayout(layout4);
+        GridBagConstraints gbc4 = new GridBagConstraints();
 
+        label5 = new JLabel("Tabilca Wyników", SwingConstants.CENTER);
+        label5.setFont(new Font("Arial", Font.BOLD, 18));
+        label5.setForeground(Color.BLACK);
+        gbc4.fill = GridBagConstraints.HORIZONTAL;
+        gbc4.gridx = 0;
+        gbc4.gridy = 0;
+        gbc4.ipadx = 10;
+        gbc4.ipady = 5;
+        gbc4.insets = new Insets(5, 5, 5, 5);
+        panel4.add(label5, gbc4);
+        String[] columnNames2 = {"Drużyna","Punktacja"};
+        model2 = new DefaultTableModel();
+        model2.setColumnIdentifiers(columnNames2);
+        table2 = new JTable() {
+            public boolean editCellAt(int row, int column, java.util.EventObject e) {
+                return false;
+            }
+        };
+        table2.setModel(model2);
+        table2.setFont(new Font("Arial",0,14));
+
+        JScrollPane listScroller5 = new JScrollPane(table2);
+        listScroller5.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        listScroller5.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller5.setMinimumSize(new Dimension(200, 230));
+        table2.setAutoCreateRowSorter(true);
+        table2.setFillsViewportHeight(true);
+        gbc4.gridy = 1;
+        gbc4.gridheight = 8;
+        panel4.add(listScroller5, gbc4);
 
         pane.addTab("Tablica Wyników", panel4);
     }
@@ -575,6 +613,7 @@ public class Window extends JFrame implements ActionListener {
             String col4 = gameList.get(i).getMainJudge().getFirst_name() + " " + gameList.get(i).getMainJudge().getLast_name();
             Object[] objs = {col0, col1,col2,col3,col4};
             model.addRow(objs);
+
 
         }
     }
