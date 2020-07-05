@@ -503,7 +503,7 @@ public class Window extends JFrame implements ActionListener {
                             String score = field11.getText()+ "-"+field21.getText();
                             service.modifyGame((Integer) table.getValueAt(row, 0),score);
                             refreshGameJTable();
-                            service.getResultsFromTournament();
+                            refreshResultJTable(tournament.getTournament_id());
                         }
                     }
                 }
@@ -529,6 +529,7 @@ public class Window extends JFrame implements ActionListener {
                                 service.getEntityManager().getTransaction().commit();
                                 service.generateTournamentMatches(tournament);
                                 refreshGameJTable();
+                                refreshResultJTable(tournament.getTournament_id());
                             }
                     }
                 }
@@ -614,6 +615,18 @@ public class Window extends JFrame implements ActionListener {
             String col4 = gameList.get(i).getMainJudge().getFirst_name() + " " + gameList.get(i).getMainJudge().getLast_name();
             Object[] objs = {col0, col1,col2,col3,col4};
             model.addRow(objs);
+
+
+        }
+    }
+    void refreshResultJTable( int tournamentId) {
+        List<Object[]> list = service.getResultsFromTournament(tournamentId);
+        model2.setRowCount(0);
+        for (int i = 0; i<list.size(); i++) {
+            String col0 = list.get(i)[0].toString();
+            String col1 = list.get(i)[1].toString();
+            Object[] objs = {col0, col1};
+            model2.addRow(objs);
 
 
         }

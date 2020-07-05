@@ -13,7 +13,6 @@ public class HungerGamesService {
     private EntityManagerFactory managerFactory;
     private EntityManager entityManager;
 
-
     public EntityManager getEntityManager() {
         return entityManager;
     }
@@ -149,14 +148,12 @@ public class HungerGamesService {
         entityManager.getTransaction().commit();
     }
 
-    public List getResultsFromTournament() {
+    public List<Object[]> getResultsFromTournament(int tournamentId) {
 
 
-        String sql = "SELECT t.nazwa, count(Zwycięzca_id) punkty FROM tournaments_teams tt\n" +
-                "left join game g on g.Zwycięzca_id = tt.team_id\n" +
-                "join team t on t.team_id = tt.team_id\n" +
-                "group by t.nazwa\n" +
-                "order by count(g.zwycięzca_id) desc;";
+        String sql = "SELECT t.Nazwa, count(Zwycięzca_id) FROM tournaments_teams tt left join game g on g.Zwycięzca_id = tt.team_id join team t on t.team_id = tt.team_id\n" +
+                "where tt.tournament_id = " + tournamentId + "\n"+
+                "group by t.nazwa, tt.tournament_id order by count(g.zwycięzca_id) desc;";
 
 
         Query query = entityManager.createNativeQuery(sql); //no entity mapping
