@@ -5,6 +5,7 @@ import com.sda.jdbc.HungerGamesService;
 import lombok.Getter;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -575,9 +576,8 @@ public class Window extends JFrame implements ActionListener {
         GridBagLayout layout4 = new GridBagLayout();
         panel4.setLayout(layout4);
         GridBagConstraints gbc4 = new GridBagConstraints();
-
         label5 = new JLabel("Tabilca Wyników", SwingConstants.CENTER);
-        label5.setFont(new Font("Arial", Font.BOLD, 18));
+        label5.setFont(new Font("Arial", Font.BOLD, 24));
         label5.setForeground(Color.BLACK);
         gbc4.fill = GridBagConstraints.HORIZONTAL;
         gbc4.gridx = 0;
@@ -595,16 +595,20 @@ public class Window extends JFrame implements ActionListener {
             }
         };
         table2.setModel(model2);
-        table2.setFont(new Font("Arial",0,14));
-
+        table2.setFont(new Font("Arial",0,22));
+        table2.setRowHeight(30);
+        DefaultTableCellRenderer renderer2 = (DefaultTableCellRenderer)table2.getDefaultRenderer(Object.class);
+        renderer2.setHorizontalAlignment( SwingConstants.CENTER );
         JScrollPane listScroller5 = new JScrollPane(table2);
         listScroller5.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller5.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller5.setMinimumSize(new Dimension(200, 230));
+
         table2.setAutoCreateRowSorter(true);
         table2.setFillsViewportHeight(true);
         gbc4.gridy = 1;
         gbc4.gridheight = 8;
+        gbc4.ipady = 300;
+        gbc4.ipadx= 700;
         panel4.add(listScroller5, gbc4);
 
         pane.addTab("Tablica Wyników", panel4);
