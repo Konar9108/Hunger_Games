@@ -93,7 +93,6 @@ public class Window extends JFrame implements ActionListener {
 
 
     public void showGuiWindow() {
-
         setUpDB();
         frame = new JFrame("System zarządzania turniejem");
         //frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -101,11 +100,11 @@ public class Window extends JFrame implements ActionListener {
         addComponents();
         frame.setSize(850, 500);
         frame.setMinimumSize(new Dimension(850, 500));
-        frame.pack();
+        //frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         frame.setJMenuBar(addMenuBar());
-
+        frame.setResizable(false);
     }
 
     private JMenuBar addMenuBar() {
@@ -151,7 +150,7 @@ public class Window extends JFrame implements ActionListener {
         gbc1.gridy = 0;
         gbc1.ipadx = 10;
         gbc1.ipady = 5;
-        gbc1.insets = new Insets(5, 5, 5, 5);
+        gbc1.insets = new Insets(5, 10, 5, 10);
         panel1.add(new JLabel(""), gbc1);
         gbc1.gridy = 1;
         panel1.add(nowaDruzynaButton, gbc1);
@@ -244,53 +243,57 @@ public class Window extends JFrame implements ActionListener {
         );
         gbc1.gridy = 6;
         panel1.add(zglosLosoweDruzynyButton,gbc1);
-        label1= new JLabel("Pula drużyn",SwingConstants.CENTER);
-        label1.setFont(new Font("Arial", Font.BOLD, 18));
-        label1.setForeground(Color.BLACK);
 
+        label1= new JLabel("Pula drużyn",SwingConstants.CENTER);
+        label1.setFont(new Font("Arial", Font.BOLD, 26));
+        label1.setForeground(Color.BLACK);
         gbc1.gridx = 1;
         gbc1.gridy = 0;
+        gbc1.ipadx = 150;
+        gbc1.insets = new Insets(5, 5, 10, 10);
         panel1.add(label1,gbc1);
-        label2= new JLabel("Grające drużyny",SwingConstants.CENTER);
-        label2.setFont(new Font("Arial", Font.BOLD, 18));
-        label2.setForeground(Color.BLACK);
-        gbc1.gridx = 2;
-        gbc1.gridy = 0;
-        panel1.add(label2,gbc1);
 
-        String[] listaDrozyn = service.getAllTeamNames(service.findAllTeams());
-        poleListyDrozyn = new JList(listaDrozyn);
-        poleListyDrozyn.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        poleListyDrozyn.setLayoutOrientation(JList.VERTICAL_WRAP);
-        poleListyDrozyn.setVisibleRowCount(-1);
+        poleListyDrozyn = new JList();
+        poleListyDrozyn.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        poleListyDrozyn.setLayoutOrientation(JList.VERTICAL);
         poleListyDrozyn.setFont(new Font("Calibri", Font.BOLD, 18));
         poleListyDrozyn.setForeground(Color.BLACK);
-        poleListyDrozyn.setPreferredSize(new Dimension(200, 400));
         JScrollPane listScroller = new JScrollPane(poleListyDrozyn);
         listScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller.setMinimumSize(new Dimension(200,230));
+        listScroller.setSize(100,700);
         gbc1.gridx=1;
         gbc1.gridy=1;
         gbc1.gridheight=8;
-        gbc1.insets = new Insets(5, 5, 5, 5);
+        gbc1.gridwidth=1;
+        gbc1.ipady = 300;
         panel1.add(listScroller, gbc1);
+        poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
 
+        label2= new JLabel("Grające drużyny",SwingConstants.CENTER);
+        label2.setFont(new Font("Arial", Font.BOLD, 26));
+        label2.setForeground(Color.BLACK);
+        gbc1.gridx = 2;
+        gbc1.gridy = 0;
+        gbc1.gridheight=1;
+        gbc1.gridwidth=1;
+        gbc1.ipady = 0;
+        gbc1.ipadx = 100;
+        panel1.add(label2,gbc1);
 
-        // String[] listaDrozyn = {"Karol","Piotr","Damian"};
-        //poleListyDrozyn = new JList(listaDrozyn);
         poleListyWybranychDrozyn = new JList();
-        poleListyWybranychDrozyn.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        poleListyWybranychDrozyn.setLayoutOrientation(JList.VERTICAL_WRAP);
-        poleListyWybranychDrozyn.setVisibleRowCount(-1);
+        poleListyWybranychDrozyn.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        poleListyWybranychDrozyn.setLayoutOrientation(JList.VERTICAL);
         poleListyWybranychDrozyn.setFont(new Font("Calibri", Font.BOLD, 18));
         poleListyWybranychDrozyn.setForeground(Color.BLACK);
-        poleListyWybranychDrozyn.setPreferredSize(new Dimension(200, 400));
         JScrollPane listScroller2 = new JScrollPane(poleListyWybranychDrozyn);
         listScroller2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller2.setMinimumSize(new Dimension(200,230));
+        gbc1.gridy=1;
         gbc1.gridx=2;
+        gbc1.gridheight=8;
+        gbc1.gridwidth=1;
+        gbc1.ipady = 300;
         panel1.add(listScroller2, gbc1);
         pane.addTab("Drużyny", panel1);
 ////////////////////////////////////////////////////////////////////////////////////////////Panel 2
