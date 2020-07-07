@@ -413,28 +413,31 @@ public class Window extends JFrame implements ActionListener {
         panel2.add(modyfikujSedziegoButton, gbc2);
 
         label3 = new JLabel("Lista dostępnych sędziów", SwingConstants.CENTER);
-        label3.setFont(new Font("Arial", Font.BOLD, 18));
+        label3.setFont(new Font("Arial", Font.BOLD, 26));
         label3.setForeground(Color.BLACK);
         gbc2.gridx = 1;
         gbc2.gridy = 0;
+        gbc2.insets = new Insets(5, 5, 10, 5);
         panel2.add(label3, gbc2);
 ///myk myk myk
         String[] listaSedziow = service.getAllJudgesNames(service.findAllJudges());
         poleListySedziow = new JList(listaSedziow);
-        poleListySedziow.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        poleListySedziow.setLayoutOrientation(JList.VERTICAL_WRAP);
-        poleListySedziow.setVisibleRowCount(-1);
-        poleListySedziow.setFont(new Font("Calibri", Font.BOLD, 18));
+        poleListySedziow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        poleListySedziow.setLayoutOrientation(JList.VERTICAL);
+        poleListySedziow.setFont(new Font("Calibri", Font.BOLD, 22));
         poleListySedziow.setForeground(Color.BLACK);
-        poleListySedziow.setPreferredSize(new Dimension(200, 400));
+        DefaultListCellRenderer renderer =  (DefaultListCellRenderer)poleListySedziow.getCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
         JScrollPane listScroller3 = new JScrollPane(poleListySedziow);
         listScroller3.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller3.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         listScroller3.setMinimumSize(new Dimension(200, 230));
         gbc2.gridx = 1;
         gbc2.gridy = 1;
-        gbc2.gridheight = 8;
-        gbc2.insets = new Insets(5, 5, 5, 5);
+        gbc2.gridheight = 4;
+        gbc2.ipady = 120;
+        gbc2.ipadx=300;
+        gbc2.insets = new Insets(0, 5, 5, 5);
         panel2.add(listScroller3, gbc2);
 
 
