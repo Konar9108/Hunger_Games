@@ -4,9 +4,11 @@ import com.sda.entities.*;
 import com.sda.jdbc.HungerGamesService;
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -262,12 +264,12 @@ public class Window extends JFrame implements ActionListener {
         JScrollPane listScroller = new JScrollPane(poleListyDrozyn);
         listScroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller.setSize(100,700);
+        listScroller.setSize(100,720);
         gbc1.gridx=1;
         gbc1.gridy=1;
         gbc1.gridheight=8;
         gbc1.gridwidth=1;
-        gbc1.ipady = 300;
+        gbc1.ipady = 320;
         panel1.add(listScroller, gbc1);
         poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
 
@@ -290,11 +292,12 @@ public class Window extends JFrame implements ActionListener {
         JScrollPane listScroller2 = new JScrollPane(poleListyWybranychDrozyn);
         listScroller2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller2.setSize(100,720);
         gbc1.gridy=1;
         gbc1.gridx=2;
         gbc1.gridheight=8;
         gbc1.gridwidth=1;
-        gbc1.ipady = 300;
+        gbc1.ipady = 320;
         panel1.add(listScroller2, gbc1);
         pane.addTab("Drużyny", panel1);
 ////////////////////////////////////////////////////////////////////////////////////////////Panel 2
@@ -436,9 +439,9 @@ public class Window extends JFrame implements ActionListener {
         gbc2.gridx = 1;
         gbc2.gridy = 1;
         gbc2.gridheight = 4;
-        gbc2.ipady = 120;
+        gbc2.ipady = 95;
         gbc2.ipadx=300;
-        gbc2.insets = new Insets(0, 5, 5, 5);
+        gbc2.insets = new Insets(5, 5, 5, 5);
         panel2.add(listScroller3, gbc2);
 
 
@@ -448,6 +451,15 @@ public class Window extends JFrame implements ActionListener {
         GridBagLayout layout3 = new GridBagLayout();
         panel3.setLayout(layout3);
         GridBagConstraints gbc3 = new GridBagConstraints();
+        JLabel labelEmpty = new JLabel("");
+        gbc3.fill = GridBagConstraints.HORIZONTAL;
+        gbc3.gridx = 0;
+        gbc3.gridy = 0;
+        gbc3.ipadx = 10;
+        gbc3.ipady = 5;
+        gbc3.insets = new Insets(5, 5, 5, 5);
+        panel3.add(labelEmpty, gbc3);
+
         siatkowkaButton = new JRadioButton("Turniej Siatkówki");
         siatkowkaButton.setSelected(true);
         siatkowkaButton.addActionListener(
@@ -459,7 +471,7 @@ public class Window extends JFrame implements ActionListener {
         );
         gbc3.fill = GridBagConstraints.HORIZONTAL;
         gbc3.gridx = 0;
-        gbc3.gridy = 0;
+        gbc3.gridy = 1;
         gbc3.ipadx = 10;
         gbc3.ipady = 5;
         gbc3.insets = new Insets(5, 5, 5, 5);
@@ -474,7 +486,7 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
         );
-        gbc3.gridy = 2;
+        gbc3.gridy = 3;
         panel3.add(dwaOgnieButton, gbc3);
         przeciaganieLinyButton = new JRadioButton("Turniej Przeciągania Liny");
         przeciaganieLinyButton.addActionListener(
@@ -484,7 +496,7 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
         );
-        gbc3.gridy = 3;
+        gbc3.gridy = 4;
         panel3.add(przeciaganieLinyButton, gbc3);
         konkurencjeButtons = new ButtonGroup();
         konkurencjeButtons.add(siatkowkaButton);
@@ -515,7 +527,7 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
         );
-        gbc3.gridy = 4;
+        gbc3.gridy = 5;
         panel3.add(modyfikujMeczButton, gbc3);
         generujMeczeButton = new JButton("Generuj Mecze");
         generujMeczeButton.addActionListener(
@@ -541,16 +553,17 @@ public class Window extends JFrame implements ActionListener {
                     }
                 }
         );
-        gbc3.gridy = 5;
+        gbc3.gridy = 6;
         panel3.add(generujMeczeButton, gbc3);
 
         label4 = new JLabel("Lista meczów", SwingConstants.CENTER);
-        label4.setFont(new Font("Arial", Font.BOLD, 18));
+        label4.setFont(new Font("Arial", Font.BOLD, 24));
         label4.setForeground(Color.BLACK);
+        gbc3.insets = new Insets(5, 5, 0, 5);
         gbc3.gridx = 1;
         gbc3.gridy = 0;
         panel3.add(label4, gbc3);
-        String[] columnNames = {"ID meczu","Drużyna 1", "Drużyna 2", "Wynik", "Sędzia"};
+        String[] columnNames = {"ID","Drużyna 1", "Drużyna 2", "Wynik", "Sędzia"};
         model = new DefaultTableModel();
         model.setColumnIdentifiers(columnNames);
         table = new JTable() {
@@ -560,15 +573,25 @@ public class Window extends JFrame implements ActionListener {
         };
         table.setModel(model);
         table.setFont(new Font("Arial",0,14));
-
         JScrollPane listScroller4 = new JScrollPane(table);
         listScroller4.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         listScroller4.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         listScroller4.setMinimumSize(new Dimension(200, 230));
         table.setAutoCreateRowSorter(true);
         table.setFillsViewportHeight(true);
+
+        int[] columnsWidth = {30,150,150,80,220};
+        for(int i=0;i<columnsWidth.length;i++){
+            TableColumn column = table.getColumnModel().getColumn(i);
+            column.setMinWidth(columnsWidth[i]);
+            column.setMaxWidth(columnsWidth[i]);
+            column.setPreferredWidth(columnsWidth[i]);
+        }
         gbc3.gridy = 1;
         gbc3.gridheight = 8;
+        gbc3.ipadx = 430;
+        gbc3.ipady = 130;
+        gbc3.insets = new Insets(5, 5, 5, 5);
         panel3.add(listScroller4, gbc3);
         pane.addTab("Turniej", panel3);
 //////////////////////////////////////////////////////////////////////////////////////////////////////Pane 4
