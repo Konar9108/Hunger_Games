@@ -251,7 +251,7 @@ return list;
             teamiteratorOne++;
             teamiteratorTwo = teamiteratorOne + 1;
         }
-
+Collections.shuffle(tournament.getGameList());
 
         entityManager.getTransaction().begin();
         entityManager.persist(tournament);
