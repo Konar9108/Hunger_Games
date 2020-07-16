@@ -119,17 +119,12 @@ public class HungerGamesService {
         return allJudgesNames;
     }
 
-//    public Teams findTeamById(int id) {
-//        TypedQuery query = entityManager.createNamedQuery("findTeam", Teams.class).setParameter(1,id);
-//        return (Teams)query.getSingleResult();
+//    public Team getRandomTeam(List<Team> teams) {
+//        List<Team> allTeams = teams;
+//        Random random = new Random();
+//        Team team = allTeams.get(random.nextInt(allTeams.size()));
+//        return team;
 //    }
-
-    public Team getRandomTeam(List<Team> teams) {
-        List<Team> allTeams = teams;
-        Random random = new Random();
-        Team team = allTeams.get(random.nextInt(allTeams.size()));
-        return team;
-    }
 
     public Team findTeamByName(String name) {
         TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Team.class).setParameter(1, name);
@@ -150,19 +145,13 @@ public class HungerGamesService {
 
     public List<Object[]> getResultsFromTournament(int tournamentId) {
 
-
         String sql = "SELECT t.Nazwa, count(Zwycięzca_id) FROM tournaments_teams tt left join game g on g.Zwycięzca_id = tt.team_id join team t on t.team_id = tt.team_id\n" +
                 "where tt.tournament_id = " + tournamentId + "\n"+
                 "group by t.nazwa, tt.tournament_id order by count(g.zwycięzca_id) desc;";
 
-
         Query query = entityManager.createNativeQuery(sql); //no entity mapping
         List<Object[]> list = query.getResultList();
 
-//        for (int i = 0; i < list.size(); i++) {
-//            System.out.print(list.get(i)[0] + " ");
-//            System.out.println(list.get(i)[1]);
-//        }
 return list;
 
     }
@@ -196,7 +185,6 @@ return list;
             throw new IndexOutOfBoundsException("ERROR: Empty Match");
         }
 
-
         Random rand = new Random();
 
         int randomWinner = rand.nextInt(2);
@@ -208,7 +196,6 @@ return list;
         int loserScore = rand.nextInt(3);
 
         match.setResult("3:" + loserScore);
-
 
     }
 
@@ -271,21 +258,6 @@ Collections.shuffle(tournament.getGameList());
             allJudges.remove(judge);
         }
         return judgeForTournament;
-    }
-
-    //DO SPRAWDZENIA
-    public Tournament generateTournamentWithRandomTeams(GameType gameType) {
-        Tournament tournament = new Tournament();
-        tournament.setTeamList(getRandomTeams());
-        tournament.setJudgeList(getRandomJudges());
-        tournament.setGameType(gameType);
-
-        entityManager.getTransaction().begin();
-        entityManager.persist(tournament);
-        entityManager.getTransaction().commit();
-
-
-        return tournament;
     }
 
 }
