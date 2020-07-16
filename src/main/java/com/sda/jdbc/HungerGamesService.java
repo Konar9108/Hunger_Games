@@ -58,12 +58,12 @@ public class HungerGamesService {
 
 
 
-    public void deleteJudge(Judge judge) {
-        entityManager.getTransaction().begin();
-        entityManager.remove(judge);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-    }
+//    public void deleteJudge(Judge judge) {
+//        entityManager.getTransaction().begin();
+//        entityManager.remove(judge);
+//        entityManager.flush();
+//        entityManager.getTransaction().commit();
+//    }
 
 
     private Judge findJudgeById(int id) {

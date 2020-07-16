@@ -4,7 +4,6 @@ import com.sda.entities.*;
 import com.sda.jdbc.HungerGamesService;
 import lombok.Getter;
 
-import javax.persistence.Column;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +16,7 @@ import java.util.List;
 @Getter
 public class Window extends JFrame implements ActionListener {
 
-    HungerGamesService service;
+
     private JFrame frame;
     private JTabbedPane pane;
     private JPanel panel1;
@@ -53,6 +52,8 @@ public class Window extends JFrame implements ActionListener {
     private JTable table;
     private JTable table2;
 
+    HungerGamesService service;
+    JudgeDao judgeDao;
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
     private GameType gameType = GameType.VOLLEYBALL;
     private Tournament tournament;
@@ -64,6 +65,7 @@ public class Window extends JFrame implements ActionListener {
     public void setUpDB() {
 
         service = new HungerGamesService();
+        judgeDao = new JudgeDao();
         service.openConnection();
         service.addJudge("Bogdan", "Bogdanowicz", 25);
         service.addJudge("Janusz", "Janowicz", 76);
@@ -363,7 +365,8 @@ public class Window extends JFrame implements ActionListener {
 
                         Judge judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
                         try {
-                            service.deleteJudge(judge);
+                            judgeDao.delete(judge);
+
                             poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
 
                         } catch (Exception e){
