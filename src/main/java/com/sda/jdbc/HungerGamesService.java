@@ -12,6 +12,7 @@ public class HungerGamesService {
 
     private EntityManagerFactory managerFactory;
     private EntityManager entityManager;
+    JudgeDao judgeDao = new JudgeDao();
 
     public EntityManager getEntityManager() {
         return entityManager;
@@ -30,52 +31,6 @@ public class HungerGamesService {
         managerFactory.close();
     }
 
-    public void addJudge(String firstName, String lastName, int age) {
-        Judge judge = new Judge();
-        judge.setFirst_name(firstName);
-        judge.setLast_name(lastName);
-        judge.setAge(age);
-        entityManager.getTransaction().begin();
-        entityManager.persist(judge);
-        entityManager.getTransaction().commit();
-    }
-
-    public void modifyJudge(Judge judge, String firstName, String lastName, int age) {
-        judge.setAge(age);
-        judge.setFirst_name(firstName);
-        judge.setLast_name(lastName);
-        entityManager.getTransaction().begin();
-        entityManager.persist(judge);
-        entityManager.flush();
-        entityManager.getTransaction().commit();
-    }
-
-    public Judge findJudgeFromNameAndLastNameAndAge(String firstName, String lastName, int age) {
-        TypedQuery query = entityManager.createNamedQuery("findJudgeFirstNameLastNameAge", Judge.class)
-                .setParameter(1, firstName).setParameter(2, lastName).setParameter(3, age);
-        return (Judge) query.getSingleResult();
-    }
-
-
-
-//    public void deleteJudge(Judge judge) {
-//        entityManager.getTransaction().begin();
-//        entityManager.remove(judge);
-//        entityManager.flush();
-//        entityManager.getTransaction().commit();
-//    }
-
-
-    private Judge findJudgeById(int id) {
-        TypedQuery query = entityManager.createNamedQuery("findJudge", Judge.class).setParameter(1, id);
-        return (Judge) query.getSingleResult();
-    }
-
-
-    public List<Judge> findAllJudges() {
-        TypedQuery<Judge> query = entityManager.createNamedQuery("allJudges", Judge.class);
-        return query.getResultList();
-    }
 
     public void addTeam(String name) {
         Team team = new Team();
@@ -111,20 +66,6 @@ public class HungerGamesService {
         return allTeamsNames;
     }
 
-    public String[] getAllJudgesNames(List<Judge> judges) {
-        String[] allJudgesNames = new String[judges.size()];
-        for (int i = 0; i < judges.size(); i++) {
-            allJudgesNames[i] = (judges.get(i).getFirst_name() + " " + judges.get(i).getLast_name() + " " + judges.get(i).getAge());
-        }
-        return allJudgesNames;
-    }
-
-//    public Team getRandomTeam(List<Team> teams) {
-//        List<Team> allTeams = teams;
-//        Random random = new Random();
-//        Team team = allTeams.get(random.nextInt(allTeams.size()));
-//        return team;
-//    }
 
     public Team findTeamByName(String name) {
         TypedQuery query = entityManager.createNamedQuery("findTeamFromName", Team.class).setParameter(1, name);
@@ -205,7 +146,7 @@ return list;
 
         int randomJudgeIdFromTournament = rand.nextInt(tournament.getJudgeList().size()) + 1;
 
-        Judge judge = findJudgeById(randomJudgeIdFromTournament);
+        Judge judge =  judgeDao.get(randomJudgeIdFromTournament);
         match.setTournament(tournament);
         match.setMainJudge(judge);
         match.setTeamOne(teamOne);
@@ -245,19 +186,5 @@ Collections.shuffle(tournament.getGameList());
         entityManager.getTransaction().commit();
     }
 
-
-    public List<Judge> getRandomJudges() {
-        List<Judge> allJudges = this.findAllJudges();
-        Random random = new Random();
-        int numberOfJudges = random.nextInt(allJudges.size());
-        if (numberOfJudges < 3) numberOfJudges = 3;
-        List<Judge> judgeForTournament = new ArrayList();
-        for (int i = 0; i < numberOfJudges; i++) {
-            Judge judge = allJudges.get(random.nextInt(allJudges.size()));
-            judgeForTournament.add(judge);
-            allJudges.remove(judge);
-        }
-        return judgeForTournament;
-    }
 
 }

@@ -6,14 +6,14 @@ import javax.persistence.Persistence;
 
 public abstract class ConnectionClass {
 
-    private EntityManagerFactory managerFactory;
-    private EntityManager entityManager;
+    private static EntityManagerFactory managerFactory;
+    private static EntityManager entityManager;
 
-    public EntityManager getEntityManager() {
+    public static EntityManager getEntityManager() {
         return entityManager;
     }
 
-    public void openConnection() {
+    public static void openConnection() {
         managerFactory = Persistence.createEntityManagerFactory("mysqlPU");
         entityManager = managerFactory.createEntityManager();
 
@@ -21,7 +21,7 @@ public abstract class ConnectionClass {
 
     }
 
-    public void closeConnection() {
+    public static void closeConnection() {
         entityManager.close();
         managerFactory.close();
     }

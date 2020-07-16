@@ -60,18 +60,25 @@ public class Window extends JFrame implements ActionListener {
     private DefaultTableModel model;
     private DefaultTableModel model2;
     private  List<Game> gameList;
+    private String[] params;
 
 
     public void setUpDB() {
 
         service = new HungerGamesService();
-        judgeDao = new JudgeDao();
+        judgeDao = new JudgeDao(service);
         service.openConnection();
-        service.addJudge("Bogdan", "Bogdanowicz", 25);
-        service.addJudge("Janusz", "Janowicz", 76);
-        service.addJudge("Roman", "Romanowski", 65);
-        service.addJudge("Adam", "Adamowicz", 35);
-        service.addJudge("Piotr", "Piotrowicz", 43);
+
+        params = new String[]{"Bogdan", "Bogdanowicz", "25"};
+        judgeDao.add(params);
+        params = new String[]{"Janusz", "Janowicz", "42"};
+        judgeDao.add(params);
+        params = new String[]{"Roman", "Romanowski", "65"};
+        judgeDao.add(params);
+        params = new String[]{"Adam", "Adamowicz", "35"};
+        judgeDao.add(params);
+        params = new String[]{"Piotr", "Piotrowicz", "43"};
+        judgeDao.add(params);
 
         service.addTeam("BULDOŻERY");
         service.addTeam("II LO");
@@ -328,13 +335,16 @@ public class Window extends JFrame implements ActionListener {
                         String nazwiskoSedziego = field2.getText();
                         String wiekSedziego = field3.getText();
 
+
                         try {
                                 int wiek = Integer.parseInt(wiekSedziego);
-                                service.addJudge(imieSedziego, nazwiskoSedziego, wiek);
-                                poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+
+                                String[] params = {imieSedziego,nazwiskoSedziego,wiekSedziego};
+                                judgeDao.add(params);
+                                poleListySedziow.setListData(judgeDao.getAllJudgesNames(judgeDao.findAllJudges()));
 
                         } catch (Exception e){
-                            JOptionPane.showMessageDialog(null, "INVALID");
+                            JOptionPane.showMessageDialog(null, "BŁĄD");
                         }
                     }
                 }
@@ -363,11 +373,11 @@ public class Window extends JFrame implements ActionListener {
                         field3.setText(sedziaSplit[2]);
 
 
-                        Judge judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+                        Judge judge = judgeDao.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
                         try {
                             judgeDao.delete(judge);
 
-                            poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+                            poleListySedziow.setListData(judgeDao.getAllJudgesNames(judgeDao.findAllJudges()));
 
                         } catch (Exception e){
                             JOptionPane.showMessageDialog(null, "BŁĄD");
@@ -399,7 +409,7 @@ public class Window extends JFrame implements ActionListener {
 
                         JOptionPane.showConfirmDialog(null,fields,"Modyfikuj sędziego",JOptionPane.OK_CANCEL_OPTION);
 
-                        Judge judge = service.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
+                        Judge judge = judgeDao.findJudgeFromNameAndLastNameAndAge(sedziaSplit[0],sedziaSplit[1],Integer.parseInt(sedziaSplit[2]));
 
                         String imieSedziego = field1.getText();
                         String nazwiskoSedziego = field2.getText();
@@ -407,8 +417,8 @@ public class Window extends JFrame implements ActionListener {
 
                         try {
                             int wiek = Integer.parseInt(wiekSedziego);
-                            service.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
-                            poleListySedziow.setListData(service.getAllJudgesNames(service.findAllJudges()));
+                            judgeDao.modifyJudge(judge,imieSedziego,nazwiskoSedziego,wiek);
+                            poleListySedziow.setListData(judgeDao.getAllJudgesNames(judgeDao.findAllJudges()));
 
                         } catch (Exception e){
                             JOptionPane.showMessageDialog(null, "INVALID");
@@ -427,7 +437,7 @@ public class Window extends JFrame implements ActionListener {
         gbc2.insets = new Insets(5, 5, 10, 5);
         panel2.add(label3, gbc2);
 ///myk myk myk
-        String[] listaSedziow = service.getAllJudgesNames(service.findAllJudges());
+        String[] listaSedziow = judgeDao.getAllJudgesNames(judgeDao.findAllJudges());
         poleListySedziow = new JList(listaSedziow);
         poleListySedziow.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         poleListySedziow.setLayoutOrientation(JList.VERTICAL);
@@ -544,7 +554,7 @@ public class Window extends JFrame implements ActionListener {
                                     JOptionPane.showMessageDialog(null, "Za mało zgłoszonych drużyn! Muszą być przynajmniej 3!");
                                     return;
                                 }
-                                tournament.setJudgeList(service.getRandomJudges());
+                                tournament.setJudgeList(judgeDao.getRandomJudges());
                                 tournament.setGameType(gameType);
                                 service.getEntityManager().getTransaction().begin();
                                 service.getEntityManager().persist(tournament);
