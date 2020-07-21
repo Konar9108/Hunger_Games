@@ -1,18 +1,11 @@
 package com.sda.entities;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IDao<T> {
 
-        T get(long id);
 
         List<T> getAll();
-
-        void add(String[] params);
-
-        void update(T t, String[] params);
-
         void delete(T t);
     }
 

@@ -1,28 +1,20 @@
-package com.sda.entities;
+package com.sda.dao;
 
 
-import com.sda.jdbc.HungerGamesService;
+import com.sda.jdbc.Connection;
+import com.sda.entities.IDao;
+import com.sda.entities.Judge;
 
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
-public class JudgeDao extends ConnectionClass implements IDao<Judge> {
+public class JudgeDao extends Connection implements IDao<Judge> {
 
-    HungerGamesService service;
-
-    public JudgeDao(HungerGamesService service) {
-        this.service = service;
-    }
-
-    public JudgeDao() {
-    }
-
-    @Override
-    public Judge get(long id) {
-            TypedQuery query = service.getEntityManager().createNamedQuery("findJudge", Judge.class).setParameter(1, id);
+    
+    public Judge get(int id) {
+            TypedQuery query = getEntityManager().createNamedQuery("findJudge", Judge.class).setParameter(1, id);
             return (Judge)query.getSingleResult();
 
     }
@@ -32,29 +24,24 @@ public class JudgeDao extends ConnectionClass implements IDao<Judge> {
         return null;
     }
 
-    @Override
-    public void add(String[]params) {
+
+    public void addJudge(String firstName, String lastName, int age) {
         Judge judge = new Judge();
-        judge.setFirst_name(params[0]);
-        judge.setLast_name(params[1]);
-        judge.setAge(Integer.parseInt(params[2]));
-        service.getEntityManager().getTransaction().begin();
-        service.getEntityManager().persist(judge);
-        service.getEntityManager().getTransaction().commit();
-
+        judge.setFirst_name(firstName);
+        judge.setLast_name(lastName);
+        judge.setAge(age);
+        getEntityManager().getTransaction().begin();
+        getEntityManager().persist(judge);
+        getEntityManager().getTransaction().commit();
     }
 
-    @Override
-    public void update(Judge judge, String[] params) {
-
-    }
 
     @Override
     public void delete(Judge judge) {
-        service.getEntityManager().getTransaction().begin();
-        service.getEntityManager().remove(judge);
-        service.getEntityManager().flush();
-        service.getEntityManager().getTransaction().commit();
+        getEntityManager().getTransaction().begin();
+        getEntityManager().remove(judge);
+        getEntityManager().flush();
+        getEntityManager().getTransaction().commit();
 
     }
 
@@ -62,20 +49,20 @@ public class JudgeDao extends ConnectionClass implements IDao<Judge> {
         judge.setAge(age);
         judge.setFirst_name(firstName);
         judge.setLast_name(lastName);
-        service.getEntityManager().getTransaction().begin();
-        service.getEntityManager().persist(judge);
-        service.getEntityManager().flush();
-        service.getEntityManager().getTransaction().commit();
+        getEntityManager().getTransaction().begin();
+        getEntityManager().persist(judge);
+        getEntityManager().flush();
+        getEntityManager().getTransaction().commit();
     }
 
     public Judge findJudgeFromNameAndLastNameAndAge(String firstName, String lastName, int age) {
-        TypedQuery query = service.getEntityManager().createNamedQuery("findJudgeFirstNameLastNameAge", Judge.class)
+        TypedQuery query = getEntityManager().createNamedQuery("findJudgeFirstNameLastNameAge", Judge.class)
                 .setParameter(1, firstName).setParameter(2, lastName).setParameter(3, age);
         return (Judge) query.getSingleResult();
     }
 
     public List<Judge> findAllJudges() {
-        TypedQuery<Judge> query = service.getEntityManager().createNamedQuery("allJudges", Judge.class);
+        TypedQuery<Judge> query = getEntityManager().createNamedQuery("allJudges", Judge.class);
         return query.getResultList();
     }
 

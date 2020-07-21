@@ -6,51 +6,51 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HungerGamesServiceTest {
+class ConnectionTest {
 
 
-    HungerGamesService hungerGamesService = new HungerGamesService();
+
 
 
     @Test
     void openConnection() {
 
+Connection.getEntityManager().isOpen();
+        Connection.openConnection();
 
-        hungerGamesService.openConnection();
 
-
-        assertTrue(hungerGamesService.getEntityManager().isOpen());
+        assertTrue(Connection.getEntityManager().isOpen());
 
     }
 
     @Test
     void closeConnection() {
 
-        hungerGamesService.openConnection();
+        Connection.openConnection();
 
-        hungerGamesService.closeConnection();
+        Connection.closeConnection();
 
 
-       assertFalse(hungerGamesService.getEntityManager().isOpen());
+        assertFalse(Connection.getEntityManager().isOpen());
 
     }
 
     @Test
     void addJudge() {
 
-        hungerGamesService.openConnection();
+        Connection.openConnection();
 
         Judge judge = new Judge();
         judge.setFirst_name("Damian");
         judge.setLast_name("Damianovic");
         judge.setAge(28);
-        hungerGamesService.getEntityManager().getTransaction().begin();
-        hungerGamesService.getEntityManager().persist(judge);
-        hungerGamesService.getEntityManager().getTransaction().commit();
+        Connection.getEntityManager().getTransaction().begin();
+        Connection.getEntityManager().persist(judge);
+        Connection.getEntityManager().getTransaction().commit();
 
         int id = judge.getJudge_id();
 
-        assertNotNull( hungerGamesService.getEntityManager().find(Judge.class, id));
+        assertNotNull( Connection.getEntityManager().find(Judge.class, id));
 
     }
 

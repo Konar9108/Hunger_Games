@@ -1,7 +1,11 @@
 package com.sda;
 
+import com.sda.dao.GameDao;
+import com.sda.dao.JudgeDao;
+import com.sda.dao.TeamDao;
+import com.sda.dao.TournamentDao;
 import com.sda.entities.*;
-import com.sda.jdbc.HungerGamesService;
+import com.sda.jdbc.Connection;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -52,8 +56,11 @@ public class Window extends JFrame implements ActionListener {
     private JTable table;
     private JTable table2;
 
-    HungerGamesService service;
     JudgeDao judgeDao;
+    TeamDao teamDao;
+    GameDao gameDao;
+    TournamentDao tournamentDao;
+
     private ArrayList<Team> zgloszoneDruzyny = new ArrayList<>();
     private GameType gameType = GameType.VOLLEYBALL;
     private Tournament tournament;
@@ -65,36 +72,36 @@ public class Window extends JFrame implements ActionListener {
 
     public void setUpDB() {
 
-        service = new HungerGamesService();
-        judgeDao = new JudgeDao(service);
-        service.openConnection();
+        judgeDao = new JudgeDao();
+        teamDao = new TeamDao();
+        gameDao = new GameDao();
+        tournamentDao = new TournamentDao();
+        Connection.openConnection();
 
-        params = new String[]{"Bogdan", "Bogdanowicz", "25"};
-        judgeDao.add(params);
-        params = new String[]{"Janusz", "Janowicz", "42"};
-        judgeDao.add(params);
-        params = new String[]{"Roman", "Romanowski", "65"};
-        judgeDao.add(params);
-        params = new String[]{"Adam", "Adamowicz", "35"};
-        judgeDao.add(params);
+        judgeDao.addJudge("Bogdan", "Bogdanowicz", 25);
+        judgeDao.addJudge("Janusz", "Janowicz", 76);
+        judgeDao.addJudge("Roman", "Romanowski", 65);
+        judgeDao.addJudge("Adam", "Adamowicz", 35);
+        judgeDao.addJudge("Piotr", "Piotrowicz", 43);
+
         params = new String[]{"Piotr", "Piotrowicz", "43"};
-        judgeDao.add(params);
 
-        service.addTeam("BULDOŻERY");
-        service.addTeam("II LO");
-        service.addTeam("KUCHARZE");
-        service.addTeam("VII LO");
-        service.addTeam("ROLNICY");
-        service.addTeam("SDA");
-        service.addTeam("ZSE");
-        service.addTeam("BACKENDOWCY");
+
+        teamDao.addTeam("BULDOŻERY");
+        teamDao.addTeam("II LO");
+        teamDao.addTeam("KUCHARZE");
+        teamDao.addTeam("VII LO");
+        teamDao.addTeam("ROLNICY");
+        teamDao.addTeam("SDA");
+        teamDao.addTeam("ZSE");
+        teamDao.addTeam("BACKENDOWCY");
 
     }
 
     public void exitListener() {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                service.closeConnection();
+                Connection.closeConnection();
                 System.out.println("zamknięto polaczenie do db i aplikację");
                 System.exit(0);
             }
@@ -151,8 +158,8 @@ public class Window extends JFrame implements ActionListener {
                     public void actionPerformed(ActionEvent event) {
                         String nazwaNowejDruzyny = JOptionPane.showInputDialog(frame, "Wpisz nazwę nowej drużyny", "Tworzenie nowej drużyny", JOptionPane.CANCEL_OPTION);
                         if (nazwaNowejDruzyny != null) {
-                            service.addTeam(nazwaNowejDruzyny);
-                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                            teamDao.addTeam(nazwaNowejDruzyny);
+                            poleListyDrozyn.setListData(teamDao.getAllTeamNames(teamDao.getAll()));
                         }
                     }
                 }
@@ -174,8 +181,8 @@ public class Window extends JFrame implements ActionListener {
                             JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
                         } else {
                             String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
-                            service.deleteTeamFromGivenName(selectedTeam);
-                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                            teamDao.deleteTeamFromGivenName(selectedTeam);
+                            poleListyDrozyn.setListData(teamDao.getAllTeamNames(teamDao.getAll()));
 
                         }
                     }
@@ -193,10 +200,10 @@ public class Window extends JFrame implements ActionListener {
                         if(nowaNazwa == null){
                             return;
                         }
-                        Team team = service.findTeamByName(teamName);
+                        Team team = teamDao.findTeamByName(teamName);
                         try {
-                            service.modifyTeam(team,nowaNazwa);
-                            poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+                            teamDao.modifyTeam(team,nowaNazwa);
+                            poleListyDrozyn.setListData(teamDao.getAllTeamNames(teamDao.getAll()));
 
                         } catch (Exception e){
                             JOptionPane.showMessageDialog(null, "INVALID");
@@ -215,11 +222,11 @@ public class Window extends JFrame implements ActionListener {
                         }
                         else {
                             String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
-                            Team team = service.findTeamByName(selectedTeam);
+                            Team team = teamDao.findTeamByName(selectedTeam);
                             if(!zgloszoneDruzyny.contains(team)){
                                 zgloszoneDruzyny.add(team);
                             }
-                            poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgloszoneDruzyny));
+                            poleListyWybranychDrozyn.setListData(teamDao.getAllTeamNames(zgloszoneDruzyny));
                         }
                     }
                 }
@@ -235,9 +242,9 @@ public class Window extends JFrame implements ActionListener {
                     }
                     else {
                         String selectedTeam = poleListyWybranychDrozyn.getSelectedValue().toString();
-                        Team team = service.findTeamByName(selectedTeam);
+                        Team team = teamDao.findTeamByName(selectedTeam);
                         zgloszoneDruzyny.remove(team);
-                        poleListyWybranychDrozyn.setListData(service.getAllTeamNames(zgloszoneDruzyny));
+                        poleListyWybranychDrozyn.setListData(teamDao.getAllTeamNames(zgloszoneDruzyny));
                     }
                 }
             }
@@ -248,8 +255,8 @@ public class Window extends JFrame implements ActionListener {
         zglosLosoweDruzynyButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
-                        zgloszoneDruzyny = service.getRandomTeams();
-                        poleListyWybranychDrozyn.setListData( service.getAllTeamNames(zgloszoneDruzyny));
+                        zgloszoneDruzyny = teamDao.getRandomTeams();
+                        poleListyWybranychDrozyn.setListData( teamDao.getAllTeamNames(zgloszoneDruzyny));
                     }
                 }
         );
@@ -280,7 +287,7 @@ public class Window extends JFrame implements ActionListener {
         gbc1.gridwidth=1;
         gbc1.ipady = 320;
         panel1.add(listScroller, gbc1);
-        poleListyDrozyn.setListData(service.getAllTeamNames(service.findAllTeams()));
+        poleListyDrozyn.setListData(teamDao.getAllTeamNames(teamDao.getAll()));
 
         label2= new JLabel("Grające drużyny",SwingConstants.CENTER);
         label2.setFont(new Font("Arial", Font.BOLD, 26));
@@ -319,6 +326,7 @@ public class Window extends JFrame implements ActionListener {
         nowySedziaButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent event) {
+
                         JTextField field1 = new JTextField();
                         JTextField field2 = new JTextField();
                         JTextField field3 = new JTextField();
@@ -335,16 +343,13 @@ public class Window extends JFrame implements ActionListener {
                         String nazwiskoSedziego = field2.getText();
                         String wiekSedziego = field3.getText();
 
-
                         try {
-                                int wiek = Integer.parseInt(wiekSedziego);
-
-                                String[] params = {imieSedziego,nazwiskoSedziego,wiekSedziego};
-                                judgeDao.add(params);
-                                poleListySedziow.setListData(judgeDao.getAllJudgesNames(judgeDao.findAllJudges()));
+                            int wiek = Integer.parseInt(wiekSedziego);
+                            judgeDao.addJudge(imieSedziego, nazwiskoSedziego, wiek);
+                            poleListySedziow.setListData(judgeDao.getAllJudgesNames(judgeDao.findAllJudges()));
 
                         } catch (Exception e){
-                            JOptionPane.showMessageDialog(null, "BŁĄD");
+                            JOptionPane.showMessageDialog(null, "INVALID");
                         }
                     }
                 }
@@ -533,7 +538,7 @@ public class Window extends JFrame implements ActionListener {
                             };
                             JOptionPane.showConfirmDialog(null,fields1,"Modyfikuj wynik meczu",JOptionPane.OK_CANCEL_OPTION);
                             String score = field11.getText()+ "-"+field21.getText();
-                            service.modifyGame((Integer) table.getValueAt(row, 0),score);
+                            gameDao.modifyGame((Integer) table.getValueAt(row, 0),score);
                             refreshGameJTable();
                             refreshResultJTable(tournament.getTournament_id());
                         }
@@ -556,10 +561,10 @@ public class Window extends JFrame implements ActionListener {
                                 }
                                 tournament.setJudgeList(judgeDao.getRandomJudges());
                                 tournament.setGameType(gameType);
-                                service.getEntityManager().getTransaction().begin();
-                                service.getEntityManager().persist(tournament);
-                                service.getEntityManager().getTransaction().commit();
-                                service.generateTournamentMatches(tournament);
+                                Connection.getEntityManager().getTransaction().begin();
+                                Connection.getEntityManager().persist(tournament);
+                                Connection.getEntityManager().getTransaction().commit();
+                                tournamentDao.generateTournamentMatches(tournament);
                                 refreshGameJTable();
                                 refreshResultJTable(tournament.getTournament_id());
                             }
@@ -666,7 +671,7 @@ public class Window extends JFrame implements ActionListener {
         }
     }
     void refreshResultJTable( int tournamentId) {
-        List<Object[]> list = service.getResultsFromTournament(tournamentId);
+        List<Object[]> list = tournamentDao.getResultsFromTournament(tournamentId);
         model2.setRowCount(0);
         for (int i = 0; i<list.size(); i++) {
             String col0 = list.get(i)[0].toString();

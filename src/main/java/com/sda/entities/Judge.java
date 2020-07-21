@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
 
 @NamedNativeQueries({
         @NamedNativeQuery(name = "allJudges", query = "select * from judge", resultClass = Judge.class),

@@ -1,10 +1,10 @@
-package com.sda.entities;
+package com.sda.jdbc;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public abstract class ConnectionClass {
+public abstract class Connection {
 
     private static EntityManagerFactory managerFactory;
     private static EntityManager entityManager;
