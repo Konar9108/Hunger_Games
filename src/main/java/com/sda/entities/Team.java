@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.swing.*;
+import java.util.ArrayList;
 
 @NamedNativeQueries({
         @NamedNativeQuery(name = "allTeams", query = "select * from team ORDER BY Nazwa", resultClass = Team.class),
@@ -37,4 +39,14 @@ public class Team {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public static boolean doesTeamExistInGivenList(String selectedTeam, ArrayList<Team> teamList) {
+        for (Team team : teamList) {
+            if (team.getName().equals(selectedTeam)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

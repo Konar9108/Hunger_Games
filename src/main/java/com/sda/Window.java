@@ -181,6 +181,12 @@ public class Window extends JFrame implements ActionListener {
                             JOptionPane.showMessageDialog(null, "wybierz druzyne do usuniecia!");
                         } else {
                             String selectedTeam = poleListyDrozyn.getSelectedValue().toString();
+
+                            if (Team.doesTeamExistInGivenList(selectedTeam , zgloszoneDruzyny)){
+                                JOptionPane.showMessageDialog(null, "nie można usunąć grającej drużyny!");
+                                return;
+                            }
+
                             teamDao.deleteTeamFromGivenName(selectedTeam);
                             poleListyDrozyn.setListData(teamDao.getAllTeamNames(teamDao.getAll()));
 
@@ -196,6 +202,11 @@ public class Window extends JFrame implements ActionListener {
                     public void actionPerformed(ActionEvent event) {
 
                         String teamName = poleListyDrozyn.getSelectedValue().toString();
+                        if (Team.doesTeamExistInGivenList(teamName , zgloszoneDruzyny)){
+                            JOptionPane.showMessageDialog(null, "nie można zmodyfikować grającej drużyny!");
+                            return;
+                        }
+
                         String nowaNazwa = (String) JOptionPane.showInputDialog(null,null,"Modyfikacja drużyny",JOptionPane.PLAIN_MESSAGE,null,null,teamName);
                         if(nowaNazwa == null){
                             return;
@@ -654,6 +665,8 @@ public class Window extends JFrame implements ActionListener {
 
         pane.addTab("Tablica Wyników", panel4);
     }
+
+
     //{"Drużyna 1", "Drużyna 2", "Wynik", "Sędzia", "Sędzia Asystujący 1, Sędzia asystujący 2"};
     void refreshGameJTable() {
         gameList = tournament.getGameList();
