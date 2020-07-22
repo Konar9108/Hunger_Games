@@ -2,7 +2,6 @@ package com.sda.dao;
 
 
 import com.sda.jdbc.Connection;
-import com.sda.entities.IDao;
 import com.sda.entities.Judge;
 
 import javax.persistence.TypedQuery;

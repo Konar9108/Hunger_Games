@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @NamedNativeQueries({
-        @NamedNativeQuery(name = "addTeamByName", query = "ad from tournaments_teams", resultClass = Team.class)
+        @NamedNativeQuery(name = "findTeamInTournament", query = "ad from tournaments_teams", resultClass = Team.class)
 
 
 })
@@ -52,14 +52,14 @@ public class Tournament {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Tournaments_teams> teams = new ArrayList<>();
+    private List<Tournaments_teams> tournaments_teams = new ArrayList<>();
 
 
-    public void addTeam(Team team) {
-        Tournaments_teams tournaments_teams = new Tournaments_teams(team, this);
-        teams.add(tournaments_teams);
-        team.getTournaments().add(tournaments_teams);
-    }
+//    public void addTeam(Team team) {
+//        Tournaments_teams tournaments_teams = new Tournaments_teams(team, this);
+//        tournaments_teams.add(tournaments_teams);
+//        team.getTournaments().add(tournaments_teams);
+//    }
 
 //
 //    public void removeTag(Tag tag) {

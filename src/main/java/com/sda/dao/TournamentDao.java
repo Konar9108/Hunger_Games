@@ -1,7 +1,6 @@
 package com.sda.dao;
 
 import com.sda.entities.Game;
-import com.sda.entities.IDao;
 import com.sda.entities.Tournament;
 import com.sda.entities.Tournaments_teams;
 import com.sda.jdbc.Connection;
@@ -31,19 +30,19 @@ public class TournamentDao extends Connection implements IDao<Tournament> {
 
     public void generateTournamentMatches(Tournament tournament) {
 
-        for (int i = 0; i < tournament.getTeamList().size(); i++) {
-            Tournaments_teams tt = new Tournaments_teams(tournament.getTeamList().get(i), tournament );
+        int teamiteratorOne = 0;
+        int teamiteratorTwo = 1;
 
+        Game game;
+
+        for (int i = 0; i < tournament.getTeamList().size(); i++) {
+            Tournaments_teams tt = new Tournaments_teams(tournament.getTeamList().get(i), tournament);
             getEntityManager().getTransaction().begin();
             getEntityManager().persist(tt);
             getEntityManager().getTransaction().commit();
         }
 
 
-        int teamiteratorOne = 0;
-        int teamiteratorTwo = 1;
-
-        Game game;
         while(teamiteratorOne < tournament.getTeamList().size() -1) {
 
             while (teamiteratorTwo < tournament.getTeamList().size()) {

@@ -1,4 +1,4 @@
-package com.sda.entities;
+package com.sda.dao;
 
 import java.util.List;
 

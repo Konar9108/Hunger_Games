@@ -11,6 +11,7 @@ import java.util.Random;
 public class GameDao extends Connection implements IDao<Game> {
 
     JudgeDao judgeDao = new JudgeDao();
+    Tournaments_teamsDao ttDao = new Tournaments_teamsDao();
 
 
     public Game findGameById(int gameId) {
@@ -18,13 +19,33 @@ public class GameDao extends Connection implements IDao<Game> {
         return (Game) query.getSingleResult();
     }
 
+
+
     public void modifyGame(int gameId, String score) {
         Game game = findGameById(gameId);
+
+        Tournaments_teams tt1 = ttDao.findTournamentTeam(game.getTeamOne().getTeam_id(),game.getTournament().getTournament_id());
+        tt1.setSetsWon(tt1.getSetsWon() +  score.charAt(0) - 48);
+        getEntityManager().getTransaction().begin();
+        getEntityManager().persist(tt1);
+        getEntityManager().flush();
+        getEntityManager().getTransaction().commit();
+
+
+        Tournaments_teams tt2 = ttDao.findTournamentTeam(game.getTeamTwo().getTeam_id(),game.getTournament().getTournament_id());
+        tt2.setSetsWon(tt2.getSetsWon() + score.charAt(2) - 48);
+        getEntityManager().getTransaction().begin();
+        getEntityManager().persist(tt2);
+        getEntityManager().flush();
+        getEntityManager().getTransaction().commit();
+
+
         game.setResult(score);
         getEntityManager().getTransaction().begin();
         getEntityManager().persist(game);
         getEntityManager().flush();
         getEntityManager().getTransaction().commit();
+
     }
 
     public Game generateMatch(Tournament tournament, Team teamOne, Team teamTwo) {

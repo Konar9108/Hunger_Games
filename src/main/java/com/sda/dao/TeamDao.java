@@ -1,7 +1,6 @@
 package com.sda.dao;
 
 
-import com.sda.entities.IDao;
 import com.sda.entities.Team;
 import com.sda.jdbc.Connection;
 

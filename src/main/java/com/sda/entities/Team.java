@@ -55,7 +55,7 @@ public class Team {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Tournaments_teams> tournaments = new ArrayList<>();
+    private List<Tournaments_teams> tournaments_teams = new ArrayList<>();
 
 
 
