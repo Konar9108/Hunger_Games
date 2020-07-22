@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @NamedNativeQueries({
         @NamedNativeQuery(name = "allTeams", query = "select * from team ORDER BY Nazwa", resultClass = Team.class),
@@ -48,5 +49,14 @@ public class Team {
         }
         return false;
     }
+
+    @OneToMany(
+            mappedBy = "team",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Tournaments_teams> tournaments = new ArrayList<>();
+
+
 
 }

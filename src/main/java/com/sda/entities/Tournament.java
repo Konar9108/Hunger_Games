@@ -30,16 +30,10 @@ public class Tournament {
    private List<Judge> judgeList;
 
 
-    @ManyToMany
-    @JoinTable(name = "tournaments_teams",
-            joinColumns = @JoinColumn(name = "tournament_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id"))
+ @Transient
    private List<Team> teamList;
 
-//    @ManyToMany
-//    @JoinTable(name = "tournaments_matches",
-//            joinColumns = @JoinColumn(name = "tournament_id"),
-//            inverseJoinColumns = @JoinColumn(name = "match_id"))
+
     @Transient
           private List<Game> gameList = new ArrayList<>();
 
@@ -52,4 +46,36 @@ public class Tournament {
                 ", teamsList=" + teamList +
                 '}';
     }
+
+    @OneToMany(
+            mappedBy = "tournament",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Tournaments_teams> teams = new ArrayList<>();
+
+
+    public void addTeam(Team team) {
+        Tournaments_teams tournaments_teams = new Tournaments_teams(team, this);
+        teams.add(tournaments_teams);
+        team.getTournaments().add(tournaments_teams);
+    }
+
+//
+//    public void removeTag(Tag tag) {
+//        for (Iterator<PostTag> iterator = tags.iterator();
+//             iterator.hasNext(); ) {
+//            PostTag postTag = iterator.next();
+//
+//            if (postTag.getPost().equals(this) &&
+//                    postTag.getTag().equals(tag)) {
+//                iterator.remove();
+//                postTag.getTag().getPosts().remove(postTag);
+//                postTag.setPost(null);
+//                postTag.setTag(null);
+//            }
+//        }
+//    }
+
+
 }
