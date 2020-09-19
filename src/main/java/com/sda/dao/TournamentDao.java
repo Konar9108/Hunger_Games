@@ -30,35 +30,40 @@ public class TournamentDao extends Connection implements IDao<Tournament> {
 
     public void generateTournamentMatches(Tournament tournament) {
 
-        int teamiteratorOne = 0;
-        int teamiteratorTwo = 1;
+   int j = 0;
 
-        Game game;
+   while (j<2) {
+       int teamiteratorOne = 0;
+       int teamiteratorTwo = 1;
 
-        for (int i = 0; i < tournament.getTeamList().size(); i++) {
-            Tournaments_teams tt = new Tournaments_teams(tournament.getTeamList().get(i), tournament);
-            getEntityManager().getTransaction().begin();
-            getEntityManager().persist(tt);
-            getEntityManager().getTransaction().commit();
+       Game game;
+
+       for (int i = 0; i < tournament.getTeamList().size(); i++) {
+           Tournaments_teams tt = new Tournaments_teams(tournament.getTeamList().get(i), tournament);
+           getEntityManager().getTransaction().begin();
+           getEntityManager().persist(tt);
+           getEntityManager().getTransaction().commit();
+       }
+
+       while (teamiteratorOne < tournament.getTeamList().size() - 1) {
+
+           while (teamiteratorTwo < tournament.getTeamList().size()) {
+               game = gameDao.generateMatch(tournament, tournament.getTeamList().get(teamiteratorOne), tournament.getTeamList().get(teamiteratorTwo));
+               tournament.getGameList().add(game);
+               teamiteratorTwo++;
+           }
+           teamiteratorOne++;
+           teamiteratorTwo = teamiteratorOne + 1;
+       }
+       Collections.shuffle(tournament.getGameList());
+
+       getEntityManager().getTransaction().begin();
+       getEntityManager().persist(tournament);
+       getEntityManager().getTransaction().commit();
+       j++;
+   }
         }
 
-
-        while(teamiteratorOne < tournament.getTeamList().size() -1) {
-
-            while (teamiteratorTwo < tournament.getTeamList().size()) {
-                game = gameDao.generateMatch(tournament, tournament.getTeamList().get(teamiteratorOne), tournament.getTeamList().get(teamiteratorTwo));
-                tournament.getGameList().add(game);
-                teamiteratorTwo++;
-            }
-            teamiteratorOne++;
-            teamiteratorTwo = teamiteratorOne + 1;
-        }
-        Collections.shuffle(tournament.getGameList());
-
-        getEntityManager().getTransaction().begin();
-        getEntityManager().persist(tournament);
-        getEntityManager().getTransaction().commit();
-    }
 
     public List<Object[]> getResultsFromTournament(int tournamentId) {
 

@@ -14,7 +14,8 @@ public class Tournaments_teamsDao extends Connection implements IDao<Tournaments
     public Tournaments_teams findTournamentTeam(int team_id, int tournament_id) {
         TypedQuery query = getEntityManager().createNamedQuery("findTournamentTeam", Tournaments_teams.class)
                 .setParameter(1, team_id).setParameter(2, tournament_id);
-        return (Tournaments_teams) query.getSingleResult();
+
+        return (Tournaments_teams) query.getResultList().get(0);
     }
 
 

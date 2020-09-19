@@ -540,7 +540,7 @@ public class Window extends JFrame implements ActionListener {
                         else {
                             JTextField field11 = new JTextField();
                             JTextField field21 = new JTextField();
-                            String wynik = (String)table.getValueAt(row,4).toString();
+//                            String wynik = (String)table.getValueAt(row,4).toString();
                             field11.setText("");
                             field21.setText("");
                             Object [] fields1 = {
