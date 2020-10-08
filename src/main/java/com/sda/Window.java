@@ -49,6 +49,7 @@ public class Window extends JFrame implements ActionListener {
     private JButton zglosLosoweDruzynyButton;
     private JButton modyfikujMeczButton;
     private JButton generujMeczeButton;
+    private JButton generujFinalButton;
     private ButtonGroup konkurencjeButtons;
     private JRadioButton siatkowkaButton;
     private JRadioButton przeciaganieLinyButton;
@@ -558,6 +559,7 @@ public class Window extends JFrame implements ActionListener {
         );
         gbc3.gridy = 5;
         panel3.add(modyfikujMeczButton, gbc3);
+
         generujMeczeButton = new JButton("Generuj Mecze");
         generujMeczeButton.addActionListener(
                 new ActionListener() {
@@ -584,6 +586,34 @@ public class Window extends JFrame implements ActionListener {
         );
         gbc3.gridy = 6;
         panel3.add(generujMeczeButton, gbc3);
+
+
+        generujFinalButton = new JButton("Generuj Finał");
+        generujFinalButton.addActionListener(
+                event -> {
+                    int input = JOptionPane.showConfirmDialog(null, "Czy na pewno chcesz wygenerować finał? W finale wezmą udział 2 drużyny z największą ilością punktów", "Uwaga!",JOptionPane.YES_NO_OPTION);
+                    if(input==JOptionPane.YES_OPTION) {
+                        List<Object[]> list = tournamentDao.getResultsFromTournament(tournament.getTournament_id());
+                        Team team1 = teamDao.findTeamByName(list.get(0)[0].toString());
+                        Team team2 = teamDao.findTeamByName(list.get(1)[0].toString());
+
+
+                       Game game = gameDao.generateMatch(tournament, team1, team2);
+                        tournament.getGameList().add(game);
+                        Connection.getEntityManager().getTransaction().begin();
+                        Connection.getEntityManager().persist(tournament);
+                        Connection.getEntityManager().getTransaction().commit();
+
+                        refreshGameJTable();
+                        refreshResultJTable(tournament.getTournament_id());
+
+
+                    }
+                }
+        );
+        gbc3.gridy = 7;
+        panel3.add(generujFinalButton, gbc3);
+
 
         label4 = new JLabel("Lista meczów", SwingConstants.CENTER);
         label4.setFont(new Font("Arial", Font.BOLD, 24));
@@ -623,12 +653,17 @@ public class Window extends JFrame implements ActionListener {
         gbc3.insets = new Insets(5, 5, 5, 5);
         panel3.add(listScroller4, gbc3);
         pane.addTab("Turniej", panel3);
+
+        //
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////Pane 4
         panel4 = new JPanel();
         GridBagLayout layout4 = new GridBagLayout();
         panel4.setLayout(layout4);
         GridBagConstraints gbc4 = new GridBagConstraints();
-        label5 = new JLabel("Tabilca Wyników", SwingConstants.CENTER);
+        label5 = new JLabel("Tablica Wyników", SwingConstants.CENTER);
         label5.setFont(new Font("Arial", Font.BOLD, 24));
         label5.setForeground(Color.BLACK);
         gbc4.fill = GridBagConstraints.HORIZONTAL;
